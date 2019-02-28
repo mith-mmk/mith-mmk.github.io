@@ -1,0 +1,66 @@
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<TITLE>ねこフィルター JavaSciript版</TITLE>
+<script type="text/javascript">
+<!--
+
+function csv2Hash(url) {
+	csvObjcts = [new Object(),new Object()];
+	var data = new XMLHttpRequest();	
+	data.open("GET", url, false);
+	data.send(null);
+
+	
+	var lines = data.responseText.split(/\r|\n|\r\n/);
+	var maxlength = 1;
+	for (var i = 0; i < lines.length;++i) {
+		var cells = lines[i].split("\t");
+
+		if( cells.length > 1 ) {
+			csvObjcts[String(cells[0].length)+"\t"+cells[0]]=cells[1];
+			if (cells[0].length > maxlength) maxlength = cells[0].length;
+		}
+	}
+	csvObjcts["0\tmaxlength"] = maxlength;
+	return csvObjcts;
+}
+
+
+function textFilter(hash,inObject,outObject) {
+	var inText = inObject.value;
+	var outText = '';
+	var maxlength = hash["0\tmaxlength"];
+	for(var i=0; i < inText.length;i++) {
+		var j=maxlength;
+		var addText = inText.charAt(i);
+		for(;j>=0;j--) {
+			if ( hash[String(j)+"\t"+inText.substr(i,j)]) {
+				addText = hash[String(j)+"\t"+inText.substr(i,j)];
+				i+=(j-1);
+				break;
+			}
+		}
+		outText += addText;
+	}
+	outObject.value=outText;
+}
+
+
+
+var hash = csv2Hash("./neko.dic");
+-->
+</script>
+</HEAD>
+<BODY bgcolor=#ffffcc>
+<H1>ねこフィルター JavaSciript版</H1>
+
+テキスト入力
+<form name="textForm" id="textForm" action="">
+  <textarea name="textbox1" id="textBox1" rows="4" cols="80"></textarea><BR>
+  <input type="button" value="変換" onclick="textFilter(hash, document.textForm.textBox1, document.textForm.textBox2);" /><BR>
+  <textarea name="textbox2" id="textBox2" rows="4" cols="80"></textarea>
+</form>
+
+
+</BODY>
+</HTML>

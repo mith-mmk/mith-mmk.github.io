@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<title>ガチャ・爆死計算機</title>
+<script language="JavaScript">
+
+function calc_P()
+{
+  var p = document.getElementById("p").value /100;
+  var n = document.getElementById("n").value;
+  var l = p * n;
+  var poisson = Math.E ** (-l) * 100;
+  document.getElementById("poisson").value = Math.round(poisson*10000)/10000;
+  var poisson1 = Math.E ** (-l) * l  / 1  * 100;
+  document.getElementById("poisson1").value = Math.round(poisson1*10000)/10000;
+  var poisson2 = Math.E ** (-l) * l ** 2  / 2  * 100;
+  document.getElementById("poisson2").value = Math.round(poisson2*10000)/10000;
+  var poisson3 = Math.E ** (-l) * l ** 3  / 6  * 100;
+  document.getElementById("poisson3").value = Math.round(poisson3*10000)/10000;
+  var poisson4 = Math.E ** (-l) * l ** 4  / 24  * 100;
+  document.getElementById("poisson4").value = Math.round(poisson4*10000)/10000;
+  var poisson_left = 100.0 - (poisson + poisson1 + poisson2 + poisson3 + poisson4);
+  document.getElementById("poisson_left").value = Math.round(poisson_left*10000)/10000;
+}
+
+
+
+</script>
+
+</HEAD>
+<BODY bgcolor="#ffffcc">
+
+<H1>ガチャの爆死確率を計算します。</H1>
+<BR>
+<form name="form1">
+ピックアップ確率：<INPUT TYPE="text" id="p" SIZE="5" VALUE="0.5">％<BR>
+ガチャ連回数：<INPUT TYPE="text" id="n" SIZE="5" VALUE="100">連<BR>
+<BR>
+
+<button type="button" onclick="calc_P()">計算</button><BR>
+<BR>
+爆死確率：<INPUT TYPE="text" id="poisson" SIZE="8" VALUE="">％<BR>
+1枚出る確率：<INPUT TYPE="text" id="poisson1" SIZE="8" VALUE="">％<BR>
+2枚出る確率：<INPUT TYPE="text" id="poisson2" SIZE="8" VALUE="">％<BR>
+3枚出る確率：<INPUT TYPE="text" id="poisson3" SIZE="8" VALUE="">％<BR>
+4枚出る確率：<INPUT TYPE="text" id="poisson4" SIZE="8" VALUE="">％<BR>
+4枚以上出る確率：<INPUT TYPE="text" id="poisson_left" SIZE="8" VALUE="">％<BR>
+
+<BR>
+※ポアソン分布の方程式にぶち込んでるだけです。
+</form>
+<BR>
+</BODY>
+</HTML>
