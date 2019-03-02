@@ -34,22 +34,25 @@ function calc_P()
 <H1>ガチャの爆死確率を計算します。</H1>
 <BR>
 <form name="form1">
-ピックアップ確率：<INPUT TYPE="text" id="p" SIZE="5" VALUE="0.5">％<BR>
-ガチャ連回数：<INPUT TYPE="text" id="n" SIZE="5" VALUE="100">連<BR>
-<BR>
+<table>
+<tr><td>ピックアップ確率：</td><td><INPUT TYPE="text" id="p" SIZE="5" VALUE="0.5">％</td></tr>
+<tr><td>ガチャ連回数：</td><td><INPUT TYPE="text" id="n" SIZE="5" VALUE="100">連</td></tr>
+<tr><td> </td><td><button type="button" onclick="calc_P()">計算</button></td></tr>
+</table>  
 
-<button type="button" onclick="calc_P()">計算</button><BR>
 <BR>
-爆死確率：<INPUT TYPE="text" id="poisson" SIZE="8" VALUE="">％<BR>
-1枚出る確率：<INPUT TYPE="text" id="poisson1" SIZE="8" VALUE="">％<BR>
-2枚出る確率：<INPUT TYPE="text" id="poisson2" SIZE="8" VALUE="">％<BR>
-3枚出る確率：<INPUT TYPE="text" id="poisson3" SIZE="8" VALUE="">％<BR>
-4枚出る確率：<INPUT TYPE="text" id="poisson4" SIZE="8" VALUE="">％<BR>
-4枚以上出る確率：<INPUT TYPE="text" id="poisson_left" SIZE="8" VALUE="">％<BR>
-
+<table>
+<tr><td>爆死確率：</td><td><INPUT TYPE="text" id="poisson" SIZE="8" VALUE="">％</td></tr>
+<tr><td>1枚出る確率：</td><td><INPUT TYPE="text" id="poisson1" SIZE="8" VALUE="">％</td></tr>
+<tr><td>2枚出る確率：</td><td><INPUT TYPE="text" id="poisson2" SIZE="8" VALUE="">％</td></tr>
+<tr><td>3枚出る確率：</td><td><INPUT TYPE="text" id="poisson3" SIZE="8" VALUE="">％</td></tr>
+<tr><td>4枚出る確率：</td><td><INPUT TYPE="text" id="poisson4" SIZE="8" VALUE="">％</td></tr>
+<tr><td>4枚以上出る確率：</td><td><INPUT TYPE="text" id="poisson_left" SIZE="8" VALUE="">％</td></tr>
+</table>  
 <BR>
 ※ポアソン分布の方程式にぶち込んでるだけです。
 </form>
 <BR>
+<a href="./">戻る</a>
 </BODY>
 </HTML>
