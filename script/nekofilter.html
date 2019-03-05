@@ -3,26 +3,32 @@
 <TITLE>ねこフィルター JavaSciript版</TITLE>
 <script type="text/javascript">
 <!--
+var hash = null;
 
 function csv2Hash(url) {
 	csvObjcts = [new Object(),new Object()];
 	var data = new XMLHttpRequest();	
-	data.open("GET", url, false);
-	data.send(null);
+	data.open("GET", url, true);
 
-	
-	var lines = data.responseText.split(/\r|\n|\r\n/);
-	var maxlength = 1;
-	for (var i = 0; i < lines.length;++i) {
-		var cells = lines[i].split("\t");
-
-		if( cells.length > 1 ) {
-			csvObjcts[String(cells[0].length)+"\t"+cells[0]]=cells[1];
-			if (cells[0].length > maxlength) maxlength = cells[0].length;
+	data.onload = function(e) {
+		if (data.readyState === 4) {
+		    if (data.status !== 200) {
+				throw(data);
+		    }
 		}
+		var lines = data.responseText.split(/\r|\n|\r\n/);
+		var maxlength = 1;
+		for (var i = 0; i < lines.length;++i) {
+		var cells = lines[i].split("\t");
+			if( cells.length > 1 ) {
+				csvObjcts[String(cells[0].length)+"\t"+cells[0]]=cells[1];
+				if (cells[0].length > maxlength) maxlength = cells[0].length;
+			}
+		}	
+		csvObjcts["0\tmaxlength"] = maxlength;
+		hash = csvObjcts;
 	}
-	csvObjcts["0\tmaxlength"] = maxlength;
-	return csvObjcts;
+	data.send(null);	
 }
 
 
@@ -30,6 +36,7 @@ function textFilter(hash,inObject,outObject) {
 	var inText = inObject.value;
 	var outText = '';
 	var maxlength = hash["0\tmaxlength"];
+	
 	for(var i=0; i < inText.length;i++) {
 		var j=maxlength;
 		var addText = inText.charAt(i);
@@ -45,22 +52,34 @@ function textFilter(hash,inObject,outObject) {
 	outObject.value=outText;
 }
 
+function aclick () {
+	if(hash != null)
+		textFilter(hash, document.getElementById('textBox1'), document.getElementById('textBox2'));
+}
 
+csv2Hash("./neko.dic");
 
-var hash = csv2Hash("./neko.dic");
 -->
 </script>
+<link rel="stylesheet" href="/css/default.css">
 </HEAD>
-<BODY bgcolor=#ffffcc>
+<BODY>
 <H1>ねこフィルター JavaSciript版</H1>
 
 テキスト入力
-<form name="textForm" id="textForm" action="">
-  <textarea name="textbox1" id="textBox1" rows="4" cols="80"></textarea><BR>
-  <input type="button" value="変換" onclick="textFilter(hash, document.textForm.textBox1, document.textForm.textBox2);" /><BR>
-  <textarea name="textbox2" id="textBox2" rows="4" cols="80"></textarea>
-</form>
-
-
+<div>
+<span style="position:relative;">
+<textarea name="textbox1" id="textBox1" rows="4" cols="80"></textarea>
+<span style="position: absolute;top: 100%;right: 0;z-index: 200;">
+<a href="#" class="button" onclick="aclick();return false;">変換</a><BR>
+</span>
+</div>
+<div class="spacer">
+<p style="height:0.5rem;"></p>
+</div>
+<div>
+<textarea name="textbox2" id="textBox2" rows="4" cols="80"></textarea>
+</div>
+<a href="./" class="back">戻る</a>
 </BODY>
 </HTML>
