@@ -29,7 +29,11 @@ function calc_P()
 </script>
 <link rel="stylesheet" href="/css/default.css">
 </HEAD>
-<BODY bgcolor="#ffffcc">
+<BODY style="background-color: #ffffcc">
+  <header>
+    <script src="/js/default.js"></script>
+    <a name="header" class="dummy"></a>
+</header>
 
 <H1>ガチャの爆死確率を計算します。</H1>
 <BR>
@@ -49,11 +53,14 @@ function calc_P()
 <tr><td>4枚出る確率：</td><td><INPUT TYPE="text" id="poisson4" SIZE="8" VALUE="">％</td></tr>
 <tr><td>4枚以上出る確率：</td><td><INPUT TYPE="text" id="poisson_left" SIZE="8" VALUE="">％</td></tr>
 </table>  
-<BR>
+<br>
 ※ポアソン分布の方程式にぶち込んでるだけです。
 </form>
-<BR>
-<BR>
-  <a href="./" class="back">戻る</a>
-</BODY>
-</HTML>
+<br>
+<br>
+</main>
+<footer>
+  <div class="goback"><a href="../" class="back">戻る</a></div>
+  <div class="gotop"><a href="#header">　</a></div>
+  </footer>
+</body></html>

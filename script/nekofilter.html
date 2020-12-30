@@ -1,8 +1,7 @@
-<HTML><HEAD>
+<html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>ねこフィルター JavaSciript版</TITLE>
 <script type="text/javascript">
-<!--
 var hash = null;
 
 function csv2Hash(url) {
@@ -58,13 +57,16 @@ function aclick () {
 }
 
 csv2Hash("./neko.dic");
-
--->
 </script>
 <link rel="stylesheet" href="/css/default.css">
-</HEAD>
-<BODY>
-<H1>ねこフィルター JavaSciript版</H1>
+</head>
+<body>
+<header>
+    <script src="/js/default.js"></script>
+    <a name="header" class="dummy"></a>
+</header>
+<main>
+<h1>ねこフィルター JavaSciript版</h1>
 
 テキスト入力
 <div>
@@ -80,6 +82,9 @@ csv2Hash("./neko.dic");
 <div>
 <textarea name="textbox2" id="textBox2" rows="4" cols="80"></textarea>
 </div>
-<a href="./" class="back">戻る</a>
-</BODY>
-</HTML>
+</main>
+<footer>
+	<div class="goback"><a href="../" class="back">戻る</a></div>
+	<div class="gotop"><a href="#header">　</a></div>
+	</footer>
+</body></html>

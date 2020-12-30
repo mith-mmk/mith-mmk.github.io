@@ -59,7 +59,7 @@ li.link::before {
 }
 
 
-a {
+main a {
     outline: none;
     padding-bottom: 2px;
     border-right:  1px solid #88881c;
@@ -76,16 +76,16 @@ a {
     text-align: center;
 }
 
-a:visited {
+main a:visited {
     color: blue;
 }
 
-a:hover {
+main a:hover {
     border-color: transparent;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
-a:active {
+main a:active {
     transform: translate3d(1px, 1px, 1px);
     border-right: 0;
     color: blue;
@@ -93,6 +93,8 @@ a:active {
     border-top: 1px solid #88881c;
     box-shadow: 0 0 0 0;
 }
+
+
 
 .back {
     
@@ -130,4 +132,37 @@ summary {
 summary:hover{
     border-color: transparent;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.gotop {
+    display: none;
+    position: fixed;
+    bottom: 2rem;
+    right: 1rem;
+}
+
+.gotop a{
+    padding: 0;
+    margin: 0;
+    border: 0;
+    text-decoration: none;
+    background-image: url('/icon/gotop.svg');
+    color: white;
+    background-color: darkgoldenrod;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    opacity: 1.0;
+    animation: buttonflow 3s 1;
+    display: block;
+}
+
+@keyframes buttonflow {
+    from { opacity: 0; }
+    to { opacity: 100; }
+}
+
+.gotop a:hover {
+    opacity: 0.60;
+    color: grey;
 }
