@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WASMサンプル</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="/css/default.css">
+</head>
+<body>
+<main></main>
+  <div>グレースケール化デモ</div>
+  <div><select id="scale-type">
+    <option value="0">Default(BT.601)</option>
+    <option value="1">Highvision(BT.709)</option>
+    <option value="2">平均化</option>
+    <option value="3">赤抽出</option>
+    <option value="4">緑抽出</option>
+    <option value="5">青抽出</option>
+  </select></div>
+  <div>
+    <table border="1">
+      <td align="left">枠内に画像をドラッグ＆ドロップしてください</td><td align="left">結果</td>
+      <tr>
+        <td><canvas id="canvas" width="640" height="512"></canvas></td>
+        <td><canvas id="canvas2" width="640" height="512"></canvas></td>
+      </tr>
+    </table>
+  </div>
+  <script type="module" src="./js/sample2.js"></script>
+  <span id="container"></span>
+　<a href="https://github.com/mith-mmk/wasm-grayscale">ソース</a>
+</main>
+<footer>
+	<div class="goback"><a href="./" class="back">戻る</a></div>
+	<div class="gotop"><a href="#header">　</a></div>
+</footer>
+</body>
+</html>
