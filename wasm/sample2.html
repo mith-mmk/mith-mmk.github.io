@@ -6,29 +6,30 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="/css/default.css">
 </head>
+<header>
+  <script src="/js/default.js"></script>
+  <a name="header" class="dummy"></a>
+</header>
 <body>
-<main></main>
-  <div>グレースケール化デモ</div>
-  <div><select id="scale-type">
+<main>
+  <h1>グレースケール化デモ</h1>
+  <p><select id="scale-type">
     <option value="0">Default(BT.601)</option>
     <option value="1">Highvision(BT.709)</option>
     <option value="2">平均化</option>
     <option value="3">赤抽出</option>
     <option value="4">緑抽出</option>
     <option value="5">青抽出</option>
-  </select></div>
+  </select></p>
   <div>
-    <table border="1">
-      <td align="left">枠内に画像をドラッグ＆ドロップしてください</td><td align="left">結果</td>
-      <tr>
-        <td><canvas id="canvas" width="640" height="512"></canvas></td>
-        <td><canvas id="canvas2" width="640" height="512"></canvas></td>
-      </tr>
-    </table>
+    <div><p>枠内に画像をドラッグ＆ドロップしてください</p></div>
+    <div><canvas id="canvas" width="800" height="600" style="border: double gray 4px;"></canvas></div>
+    <div>出力</div>
+    <div><canvas id="canvas2" width="800" height="600" style="border: double gray 4px;"></canvas></div>
   </div>
   <script type="module" src="./js/sample2.js"></script>
-  <span id="container"></span>
-　<a href="https://github.com/mith-mmk/wasm-grayscale">ソース</a>
+
+　<li class="link"><a href="https://github.com/mith-mmk/wasm-grayscale">ソース</a>
 </main>
 <footer>
 	<div class="goback"><a href="./" class="back">戻る</a></div>

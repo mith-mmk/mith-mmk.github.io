@@ -14,10 +14,12 @@ function jsinit(wasm) {
     const memory = wasm.memory; // 共有メモリーに必要
     // 共有メモリーのアドレスの取得
     const universe = Universe.new(width,height);
+    const img = new Image();
     let buffersize = width * height * 4;
     let ibuf = new Uint8Array(memory.buffer,universe.input_buffer(), buffersize);
     let buf = new Uint8ClampedArray(memory.buffer,universe.output_buffer(), buffersize);
     clearCanvas();
+    img.src = './images/sample01.jpg';
 
     function clearCanvas() {
       universe.clear(0x0);
@@ -32,6 +34,27 @@ function jsinit(wasm) {
       ctx2.putImageData(imgData, 0, 0);
     }
 
+
+    img.onload = (ev) => {
+      // スケーリング（画像をCanvasサイズに縮小する）
+      let drawWidth = img.width;
+      let drawHeight = img.height;
+      if (img.width > width) {
+        drawWidth = width;
+        drawHeight = width / img.width * img.height;
+      }
+      console.log(img.width,img.height,width,height,drawWidth,drawHeight);
+      if (drawHeight > height){
+        drawHeight = height;
+        drawWidth = drawHeight / img.height * drawWidth;
+      }
+      clearCanvas();
+      console.log(width,height,drawWidth,drawHeight);
+      ctx.drawImage(img,0,0,img.width,img.height,0,0,drawWidth,drawHeight);
+      const imgData = ctx.getImageData(0, 0, width, height);
+      ibuf.set(imgData.data);
+      toGrayscale();
+    }
 
     scale_type.addEventListener('change', (ev) => {
       toGrayscale();
@@ -54,28 +77,8 @@ function jsinit(wasm) {
       }
       if (files.length > 1) return alert('Illigal Operation.Multi Files Select.');
       const reader = new FileReader();
-      const img = new Image();
       reader.onload = (event) => {
         img.src = event.target.result;
-        img.onload = (ev) => {
-
-          // スケーリング（画像をCanvasサイズに縮小する）
-          let drawWidth = img.width;
-          let drawHeight = img.height;
-          if (img.width > width) {
-            drawWidth = width;
-            drawHeight = img.height / img.width * height;
-          }
-          if (drawHeight > height){
-            drawHeight = height;
-            drawWidth = img.width / img.height * drawWidth;
-          }
-          clearCanvas();
-          ctx.drawImage(img,0,0,img.width,img.height,0,0,drawWidth,drawHeight);
-          const imgData = ctx.getImageData(0, 0, width, height);
-          ibuf.set(imgData.data);
-          toGrayscale();
-        }
       };
       reader.readAsDataURL(files[0]);
     }, false);

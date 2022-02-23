@@ -19,7 +19,6 @@ p {
 
 }
 
-
 h1{
     background: aqua;
     color: black;
@@ -58,6 +57,9 @@ li.link::before {
     font-size: 2rem;
 }
 
+textarea {
+    line-height: 1.2em;
+}
 
 main a {
     outline: none;
@@ -66,10 +68,10 @@ main a {
     border-bottom: 1px solid #88881c;
     background-color:cornsilk;
     margin: 0.5rem;
-    font-size: 12pt;
+    font-size: 2rem;;
     height: 2.5rem;
     line-height: 2.5rem;
-    width: 25rem; 
+    width: 30rem; 
     border-radius: 5px;
     text-decoration: none;
     display: inline-block;
@@ -94,30 +96,44 @@ main a:active {
     box-shadow: 0 0 0 0;
 }
 
-
-
 .back {
-    
     outline: none;
     padding-bottom: 2px;
     border-right:  1px solid #88881c;
     border-bottom: 1px solid #88881c;
     background-color:cornsilk;
-    margin: 0.5rem;
-    font-size: 12pt;
-    height: 2.5rem;
-    line-height: 2.5rem;
-    width: 2.5rem; 
-    border-radius: 5px;
+    margin: 0.2em;
+    font-size: 2rem;
+    height: 1.8em;
+    line-height: 1.8em;
+    width: 4em; 
+    border-radius: 0.5em;
     text-decoration: none;
     display: inline-block;
     text-align: center;
 }
 
 .button {
-    height: 1.5rem;
-    width: 3rem;
-    line-height: 1.5rem;
+    padding: 0.1em;
+    margin: 0.1em;
+    border-radius: 0.5em;
+    border: 0.1em;
+    line-height: 2rem;
+    font-size: 2rem;
+}
+
+.button2 {
+    border-right:  0.05em solid #88881c;
+    border-bottom: 0.05em solid #88881c;
+    background-color: cornsilk;
+    color: #334aff;
+    padding: 0.4em;
+    height: 1.0em;
+    margin: 0.2em;
+    width: 3em;
+    border-radius: 0.5em;
+    line-height: 1.0em;
+    font-size: 1.6rem;
 }
 
 summary {
@@ -149,8 +165,8 @@ summary:hover{
     background-image: url('/icon/gotop.svg');
     color: white;
     background-color: darkgoldenrod;
-    width: 60px;
-    height: 60px;
+    width: 2em;
+    height: 2em;
     border-radius: 50%;
     opacity: 1.0;
     animation: buttonflow 3s 1;
@@ -165,4 +181,40 @@ summary:hover{
 .gotop a:hover {
     opacity: 0.60;
     color: grey;
+}
+
+@media screen and (min-device-width: 480px) {
+    main a {
+        font-size: 1.6rem;
+    }
+
+    .back {
+        font-size: 1.6rem;
+    }
+
+    .gotop {
+        font-size: 1.6rem;
+    }
+
+}
+
+@media screen and (min-device-width: 768px) {
+    main a {
+        font-size: 1.5rem;
+    }
+
+    .back {
+        font-size: 1.5rem;
+    }
+
+}
+
+@media screen and (min-device-width: 1024px) {
+    main a {
+        font-size: 1.2rem;
+    }
+
+    .back {
+        font-size: 1.2rem;
+    }
 }
