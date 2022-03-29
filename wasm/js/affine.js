@@ -69,7 +69,6 @@ init().then((wasm) => {
     request.responseType = "arraybuffer";
 
     request.onloadend = () => {
-      console.log(request);
       let arraybuffer = request.response
       let buffer = new Uint8Array(arraybuffer);      
       universe.inputBufferWithLength(buffer.length);
