@@ -71,9 +71,6 @@ init().then((wasm) => {
     request.onloadend = () => {
       let arraybuffer = request.response
       let buffer = new Uint8Array(arraybuffer);      
-      universe.inputBufferWithLength(buffer.length);
-      let ibuf = new Uint8Array(memory.buffer,universe.inputBuffer(), buffer.length);
-      ibuf.set(buffer);
       universe.imageDecoder(buffer,0);
       affine();
       drawer();
@@ -82,9 +79,6 @@ init().then((wasm) => {
 
     reader.onloadend = (event) => {
         let buffer = new Uint8Array(reader.result);
-        universe.inputBufferWithLength(buffer.length);
-        let ibuf = new Uint8Array(memory.buffer,universe.inputBuffer(), buffer.length);
-        ibuf.set(buffer);
         universe.clear(0x000000);
         universe.imageDecoder(buffer,0);
         drawed = true;
