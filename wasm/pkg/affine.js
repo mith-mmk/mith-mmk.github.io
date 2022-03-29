@@ -30,9 +30,72 @@ function addHeapObject(obj) {
     return idx;
 }
 
-let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
+function debugString(val) {
+    // primitive types
+    const type = typeof val;
+    if (type == 'number' || type == 'boolean' || val == null) {
+        return  `${val}`;
+    }
+    if (type == 'string') {
+        return `"${val}"`;
+    }
+    if (type == 'symbol') {
+        const description = val.description;
+        if (description == null) {
+            return 'Symbol';
+        } else {
+            return `Symbol(${description})`;
+        }
+    }
+    if (type == 'function') {
+        const name = val.name;
+        if (typeof name == 'string' && name.length > 0) {
+            return `Function(${name})`;
+        } else {
+            return 'Function';
+        }
+    }
+    // objects
+    if (Array.isArray(val)) {
+        const length = val.length;
+        let debug = '[';
+        if (length > 0) {
+            debug += debugString(val[0]);
+        }
+        for(let i = 1; i < length; i++) {
+            debug += ', ' + debugString(val[i]);
+        }
+        debug += ']';
+        return debug;
+    }
+    // Test for built-in
+    const builtInMatches = /\[object ([^\]]+)\]/.exec(toString.call(val));
+    let className;
+    if (builtInMatches.length > 1) {
+        className = builtInMatches[1];
+    } else {
+        // Failed to match the standard '[object ClassName]'
+        return toString.call(val);
+    }
+    if (className == 'Object') {
+        // we're a user defined class or Object
+        // JSON.stringify avoids problems with cycles, and is generally much
+        // easier than looping through ownProperties of `val`.
+        try {
+            return 'Object(' + JSON.stringify(val) + ')';
+        } catch (_) {
+            return 'Object';
+        }
+    }
+    // errors
+    if (val instanceof Error) {
+        return `${val.name}: ${val.message}\n${val.stack}`;
+    }
+    // TODO we could test for more things here, like `Set`s and `Map`s.
+    return className;
+}
 
-cachedTextDecoder.decode();
+let WASM_VECTOR_LEN = 0;
 
 let cachegetUint8Memory0 = null;
 function getUint8Memory0() {
@@ -40,24 +103,6 @@ function getUint8Memory0() {
         cachegetUint8Memory0 = new Uint8Array(wasm.memory.buffer);
     }
     return cachegetUint8Memory0;
-}
-
-function getStringFromWasm0(ptr, len) {
-    return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
-}
-/**
-*/
-export function initialization() {
-    wasm.initialization();
-}
-
-let WASM_VECTOR_LEN = 0;
-
-function passArray8ToWasm0(arg, malloc) {
-    const ptr = malloc(arg.length * 1);
-    getUint8Memory0().set(arg, ptr / 1);
-    WASM_VECTOR_LEN = arg.length;
-    return ptr;
 }
 
 let cachedTextEncoder = new TextEncoder('utf-8');
@@ -121,8 +166,40 @@ function getInt32Memory0() {
     return cachegetInt32Memory0;
 }
 
+let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
+
+cachedTextDecoder.decode();
+
+function getStringFromWasm0(ptr, len) {
+    return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
+}
+/**
+*/
+export function initialization() {
+    wasm.initialization();
+}
+
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1);
+    getUint8Memory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
+
 function isLikeNone(x) {
     return x === undefined || x === null;
+}
+
+let cachegetUint8ClampedMemory0 = null;
+function getUint8ClampedMemory0() {
+    if (cachegetUint8ClampedMemory0 === null || cachegetUint8ClampedMemory0.buffer !== wasm.memory.buffer) {
+        cachegetUint8ClampedMemory0 = new Uint8ClampedArray(wasm.memory.buffer);
+    }
+    return cachegetUint8ClampedMemory0;
+}
+
+function getClampedArrayU8FromWasm0(ptr, len) {
+    return getUint8ClampedMemory0().subarray(ptr / 1, ptr / 1 + len);
 }
 
 function handleError(f, args) {
@@ -177,23 +254,23 @@ export class Universe {
     * @param {number} height
     * @returns {number}
     */
-    append_canvas(width, height) {
-        var ret = wasm.universe_append_canvas(this.ptr, width, height);
+    appendCanvas(width, height) {
+        var ret = wasm.universe_appendCanvas(this.ptr, width, height);
         return ret >>> 0;
     }
     /**
     * @returns {number}
     */
-    input_buffer() {
-        var ret = wasm.universe_input_buffer(this.ptr);
+    inputBuffer() {
+        var ret = wasm.universe_inputBuffer(this.ptr);
         return ret;
     }
     /**
     * @param {number} size
     * @returns {number}
     */
-    input_buffer_set_length(size) {
-        var ret = wasm.universe_input_buffer_set_length(this.ptr, size);
+    inputBufferWithLength(size) {
+        var ret = wasm.universe_inputBufferWithLength(this.ptr, size);
         return ret;
     }
     /**
@@ -205,8 +282,8 @@ export class Universe {
     /**
     * @param {number} number
     */
-    clear_with_number(number) {
-        wasm.universe_clear_with_number(this.ptr, number);
+    clearSelectCanvas(number) {
+        wasm.universe_clearSelectCanavas(this.ptr, number);
     }
     /**
     * @param {number} x
@@ -214,8 +291,26 @@ export class Universe {
     * @param {number} color
     * @param {number} s
     */
-    point_antialias(x, y, color, s) {
-        wasm.universe_point_antialias(this.ptr, x, y, color, s);
+    pointAntialias(x, y, color, s) {
+        wasm.universe_pointAntialias(this.ptr, x, y, color, s);
+    }
+    /**
+    * @param {number} x
+    * @param {number} y
+    * @param {number} color
+    */
+    pointWithPen(x, y, color) {
+        wasm.universe_pointWithPen(this.ptr, x, y, color);
+    }
+    /**
+    * @param {number} sx
+    * @param {number} sy
+    * @param {number} ex
+    * @param {number} ey
+    * @param {number} color
+    */
+    line(sx, sy, ex, ey, color) {
+        wasm.universe_line(this.ptr, sx, sy, ex, ey, color);
     }
     /**
     * @param {number} sx
@@ -224,8 +319,8 @@ export class Universe {
     * @param {number} ex
     * @param {number} color
     */
-    line(sx, sy, ey, ex, color) {
-        wasm.universe_line(this.ptr, sx, sy, ey, ex, color);
+    lineWithPen(sx, sy, ey, ex, color) {
+        wasm.universe_lineWithPen(this.ptr, sx, sy, ey, ex, color);
     }
     /**
     * @param {number} sx
@@ -262,30 +357,30 @@ export class Universe {
     /**
     * @returns {number}
     */
-    output_buffer() {
-        var ret = wasm.universe_output_buffer(this.ptr);
+    getBuffer() {
+        var ret = wasm.universe_getBuffer(this.ptr);
         return ret;
     }
     /**
     * @param {number} number
     * @returns {number}
     */
-    buffer_with_number(number) {
-        var ret = wasm.universe_buffer_with_number(this.ptr, number);
+    getBufferSelectCanvas(number) {
+        var ret = wasm.universe_getBufferSelectCanvas(this.ptr, number);
         return ret;
     }
     /**
     * @returns {number}
     */
-    width() {
-        var ret = wasm.universe_width(this.ptr);
+    getWidth() {
+        var ret = wasm.universe_getWidth(this.ptr);
         return ret >>> 0;
     }
     /**
     * @returns {number}
     */
-    height() {
-        var ret = wasm.universe_height(this.ptr);
+    getHeight() {
+        var ret = wasm.universe_getHeight(this.ptr);
         return ret >>> 0;
     }
     /**
@@ -317,48 +412,173 @@ export class Universe {
         wasm.universe_ellipse(this.ptr, ox, oy, rx, ry, tilde, color);
     }
     /**
+    * @param {number} x1
+    * @param {number} y1
+    * @param {number} x2
+    * @param {number} y2
+    * @param {number} x3
+    * @param {number} y3
+    * @param {number} a
+    * @param {number} color
+    */
+    quadraticCurve(x1, y1, x2, y2, x3, y3, a, color) {
+        wasm.universe_quadraticCurve(this.ptr, x1, y1, x2, y2, x3, y3, a, color);
+    }
+    /**
+    * @param {number} x1
+    * @param {number} y1
+    * @param {number} x2
+    * @param {number} y2
+    * @param {number} x3
+    * @param {number} y3
+    * @param {number} color
+    */
+    bezierCurve(x1, y1, x2, y2, x3, y3, color) {
+        wasm.universe_bezierCurve(this.ptr, x1, y1, x2, y2, x3, y3, color);
+    }
+    /**
+    * @param {number} x1
+    * @param {number} y1
+    * @param {number} x2
+    * @param {number} y2
+    * @param {number} x3
+    * @param {number} y3
+    * @param {number} x4
+    * @param {number} y4
+    * @param {number} color
+    */
+    bezierCurve3(x1, y1, x2, y2, x3, y3, x4, y4, color) {
+        wasm.universe_bezierCurve3(this.ptr, x1, y1, x2, y2, x3, y3, x4, y4, color);
+    }
+    /**
     * @param {number} canvas_in
     * @param {number} canvas_out
     * @param {number} no
     * @param {number} interpolation
     */
-    affine_test2(canvas_in, canvas_out, no, interpolation) {
-        wasm.universe_affine_test2(this.ptr, canvas_in, canvas_out, no, interpolation);
+    affineTest2(canvas_in, canvas_out, no, interpolation) {
+        wasm.universe_affineTest2(this.ptr, canvas_in, canvas_out, no, interpolation);
     }
     /**
     * @param {number} canvas_in
     * @param {number} canvas_out
     */
-    affine_test(canvas_in, canvas_out) {
-        wasm.universe_affine_test(this.ptr, canvas_in, canvas_out);
+    affineTest(canvas_in, canvas_out) {
+        wasm.universe_affineTest(this.ptr, canvas_in, canvas_out);
     }
     /**
     * @param {Uint8Array} buffer
     * @param {number} verbose
     */
-    image_decoder(buffer, verbose) {
+    imageDecoder(buffer, verbose) {
         var ptr0 = passArray8ToWasm0(buffer, wasm.__wbindgen_malloc);
         var len0 = WASM_VECTOR_LEN;
-        wasm.universe_image_decoder(this.ptr, ptr0, len0, verbose);
+        wasm.universe_imageDecoder(this.ptr, ptr0, len0, verbose);
     }
     /**
     * @param {Uint8Array} buffer
     * @param {number} verbose
     */
-    jpeg_decoder(buffer, verbose) {
+    jpegDecoder(buffer, verbose) {
         var ptr0 = passArray8ToWasm0(buffer, wasm.__wbindgen_malloc);
         var len0 = WASM_VECTOR_LEN;
-        wasm.universe_jpeg_decoder(this.ptr, ptr0, len0, verbose);
+        wasm.universe_jpegDecoder(this.ptr, ptr0, len0, verbose);
     }
     /**
     * @param {Uint8Array} buffer
     * @param {number} verbose
     * @param {number} number
     */
-    jpeg_decoder_select_canvas(buffer, verbose, number) {
+    jpegDecoderSelectCanvas(buffer, verbose, number) {
         var ptr0 = passArray8ToWasm0(buffer, wasm.__wbindgen_malloc);
         var len0 = WASM_VECTOR_LEN;
-        wasm.universe_jpeg_decoder_select_canvas(this.ptr, ptr0, len0, verbose, number);
+        wasm.universe_jpegDecoderSelectCanvas(this.ptr, ptr0, len0, verbose, number);
+    }
+    /**
+    * @param {string} canvas
+    */
+    bindCanvas(canvas) {
+        var ptr0 = passStringToWasm0(canvas, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len0 = WASM_VECTOR_LEN;
+        wasm.universe_bindCanvas(this.ptr, ptr0, len0);
+    }
+    /**
+    * @param {string} canvas
+    */
+    bindCanvas2(canvas) {
+        var ptr0 = passStringToWasm0(canvas, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len0 = WASM_VECTOR_LEN;
+        wasm.universe_bindCanvas2(this.ptr, ptr0, len0);
+    }
+    /**
+    * @param {number} width
+    * @param {number} height
+    */
+    drawCanvas(width, height) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.universe_drawCanvas(retptr, this.ptr, width, height);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            if (r1) {
+                throw takeObject(r0);
+            }
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @param {number} width
+    * @param {number} height
+    * @param {number} no
+    */
+    drawSelectCanvas(width, height, no) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.universe_drawSelectCanvas(retptr, this.ptr, width, height, no);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            if (r1) {
+                throw takeObject(r0);
+            }
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @param {number} width
+    * @param {number} height
+    */
+    drawCanvas2(width, height) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.universe_drawCanvas2(retptr, this.ptr, width, height);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            if (r1) {
+                throw takeObject(r0);
+            }
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @param {number} width
+    * @param {number} height
+    * @param {number} no
+    */
+    drawSelectCanvas2(width, height, no) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.universe_drawSelectCanvas2(retptr, this.ptr, width, height, no);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            if (r1) {
+                throw takeObject(r0);
+            }
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
     }
 }
 
@@ -402,10 +622,10 @@ async function init(input) {
     imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
         takeObject(arg0);
     };
-    imports.wbg.__wbg_log_f339d755eaefb6c4 = function(arg0, arg1) {
+    imports.wbg.__wbg_log_053b47cf31418d63 = function(arg0, arg1) {
         console.log(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbg_alert_b670481d7960ce13 = function(arg0, arg1) {
+    imports.wbg.__wbg_alert_dfd756a22e15b8f8 = function(arg0, arg1) {
         alert(getStringFromWasm0(arg0, arg1));
     };
     imports.wbg.__wbg_new_693216e109162396 = function() {
@@ -438,6 +658,10 @@ async function init(input) {
         var ret = getObject(arg0).getElementById(getStringFromWasm0(arg1, arg2));
         return isLikeNone(ret) ? 0 : addHeapObject(ret);
     };
+    imports.wbg.__wbg_newwithu8clampedarrayandsh_b908678603f3dc4e = function() { return handleError(function (arg0, arg1, arg2, arg3) {
+        var ret = new ImageData(getClampedArrayU8FromWasm0(arg0, arg1), arg2 >>> 0, arg3 >>> 0);
+        return addHeapObject(ret);
+    }, arguments) };
     imports.wbg.__wbg_instanceof_HtmlElement_d3e8f1c1d6788b24 = function(arg0) {
         var ret = getObject(arg0) instanceof HTMLElement;
         return ret;
@@ -445,6 +669,21 @@ async function init(input) {
     imports.wbg.__wbg_setinnerText_c3f35135f8c5259e = function(arg0, arg1, arg2) {
         getObject(arg0).innerText = getStringFromWasm0(arg1, arg2);
     };
+    imports.wbg.__wbg_instanceof_CanvasRenderingContext2d_e8b3a478a1b32d55 = function(arg0) {
+        var ret = getObject(arg0) instanceof CanvasRenderingContext2D;
+        return ret;
+    };
+    imports.wbg.__wbg_putImageData_4b3f33d7415a7f64 = function() { return handleError(function (arg0, arg1, arg2, arg3) {
+        getObject(arg0).putImageData(getObject(arg1), arg2, arg3);
+    }, arguments) };
+    imports.wbg.__wbg_instanceof_HtmlCanvasElement_a6157e470d06b638 = function(arg0) {
+        var ret = getObject(arg0) instanceof HTMLCanvasElement;
+        return ret;
+    };
+    imports.wbg.__wbg_getContext_bd4e9445094eda84 = function() { return handleError(function (arg0, arg1, arg2) {
+        var ret = getObject(arg0).getContext(getStringFromWasm0(arg1, arg2));
+        return isLikeNone(ret) ? 0 : addHeapObject(ret);
+    }, arguments) };
     imports.wbg.__wbg_newnoargs_f579424187aa1717 = function(arg0, arg1) {
         var ret = new Function(getStringFromWasm0(arg0, arg1));
         return addHeapObject(ret);
@@ -476,6 +715,13 @@ async function init(input) {
     imports.wbg.__wbindgen_object_clone_ref = function(arg0) {
         var ret = getObject(arg0);
         return addHeapObject(ret);
+    };
+    imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
+        var ret = debugString(getObject(arg1));
+        var ptr0 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len0 = WASM_VECTOR_LEN;
+        getInt32Memory0()[arg0 / 4 + 1] = len0;
+        getInt32Memory0()[arg0 / 4 + 0] = ptr0;
     };
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));

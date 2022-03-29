@@ -1,23 +1,24 @@
 import init,{Universe} from "../pkg/affine.js"
 
-
-let universe;
-let buffersize;
-let buf;
-let buf2;
-let img;
-let img2;
-let memory;
 let drawed = true;
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
 const canvas2 = document.getElementById('canvas2');
-const ctx2 = canvas2.getContext('2d');
 const width = canvas.width;
 const height = canvas.width
+canvas2.width = width;
+canvas2.height = height;
 
 const method = document.getElementById('method');
 const interpolation = document.getElementById('interpolation');
+let universe;
+    
+function affine() {
+  const m = method.value;
+  const i = interpolation.value;
+  universe.clearSelectCanvas(1);
+  universe.affineTest2(0,1,m,i);
+  drawer();
+}
 
 method.addEventListener('change', (ev) => {
   affine();
@@ -54,24 +55,14 @@ canvas.addEventListener('drop', (ev) => {
 
 init().then((wasm) => {
     const memory = wasm.memory; // 共有メモリーに必要
-    const universe = Universe.new(width,height);
-    universe.append_canvas(width,height);
-    buffersize = width * height * 4;
-    const buf  = new Uint8ClampedArray(memory.buffer,universe.output_buffer(), buffersize);
-    const img  = new ImageData(buf, width, height);
+    universe = Universe.new(width,height);
+    universe.appendCanvas(width,height);
+    universe.bindCanvas("canvas");
+    universe.bindCanvas2("canvas2");
     universe.clear(0x000000);
-    const buf2 = new Uint8ClampedArray(memory.buffer,universe.buffer_with_number(1), buffersize);
-    const img2 = new ImageData(buf2, width, height);
-    universe.clear_with_number(1);
+    universe.clearSelectCanvas(1);
     drawer();
-    
-    function affine() {
-      const m = method.value;
-      const i = interpolation.value;
-      universe.clear_with_number(1);
-       universe.affine_test2(0,1,m,i);
-      drawer();
-    }
+
 
     const request = new XMLHttpRequest();
     request.open("GET", "./images/sample02.jpg");
@@ -81,46 +72,31 @@ init().then((wasm) => {
       console.log(request);
       let arraybuffer = request.response
       let buffer = new Uint8Array(arraybuffer);      
-      universe.input_buffer_set_length(buffer.length);
-      let ibuf = new Uint8Array(memory.buffer,universe.input_buffer(), buffer.length);
+      universe.inputBufferWithLength(buffer.length);
+      let ibuf = new Uint8Array(memory.buffer,universe.inputBuffer(), buffer.length);
       ibuf.set(buffer);
-      universe.image_decoder(buffer,0);
-      drawer();
+      universe.imageDecoder(buffer,0);
       affine();
+      drawer();
     };
     request.send();
 
     reader.onloadend = (event) => {
         let buffer = new Uint8Array(reader.result);
-        universe.input_buffer_set_length(buffer.length);
-        let ibuf = new Uint8Array(memory.buffer,universe.input_buffer(), buffer.length);
+        universe.inputBufferWithLength(buffer.length);
+        let ibuf = new Uint8Array(memory.buffer,universe.inputBuffer(), buffer.length);
         ibuf.set(buffer);
         universe.clear(0x000000);
-      
-        universe.image_decoder(buffer,0);
+        universe.imageDecoder(buffer,0);
         drawed = true;
-      //  ctx.putImageData(img, 0, 0);
-      //  img = new ImageData(buf, universe.width(), universe.height());
+        affine();
         drawer();
     };
 
-    function drawer() {
-      ctx.putImageData(img, 0, 0);
-      ctx2.putImageData(img2, 0, 0);
-    }
-
 });
 
-
-
-function start_draw() {
-  setTimeout(function(){draw();},1000 / 120);
-  drawed = false;  
+function drawer() {
+  universe.drawCanvas(width,height);
+  universe.drawCanvas2(width,height);
 }
 
-function draw() {
-    if(img == null || drawed) return;
-    setTimeout(function(){draw();},1000 / 120);
-    ctx.putImageData(img, 0, 0);
-    ctx2.putImageData(img2, 0, 0);
-}
