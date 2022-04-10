@@ -35,7 +35,7 @@
   </div>
   <script type="module" src="./js/load-affine.js"></script>
   <div style="width: 900px;">
-　<div>コードが原型を留めなくなるのでシンプルなコードを置いておく</div>
+　<div>コードが原型を留めなくなるのでシンプルなコードを置いておく(2022/04/10 逆アフィン変換が一部間違ってたのでfix</div>
   <pre class="prettyprint lang-rust">
 
    /*
@@ -279,16 +279,16 @@
                });
    
            // pre-calc inverse affine transformation
-           // x =  y1 * X - x0 * Y  + x1 * y2 - x2 * y1
-           // y = -y0 * X + x1 * X  + x2 * y0 - x0 * x2
-   
+           // x =  y1 * X - x0 * Y  +  x1 * y2 - y1 * x2
+           // y = -y0 * X + x1 * X  +  y0 * x2 - x0 * y2
+
            let t = x0 * y1 - x1 * y0;
            let ix0 =  y1;
            let ix1 = -x1;
-           let ix2 =  x1 * y2 - x2 * y1; 
+           let ix2 = x1 * y2 - y1 * x2; 
            let iy0 = -y0;
            let iy1 =  x0;
-           let iy2 =  x2 * y0 - x0 * x2;
+           let iy2 = y0 * x2 - x0 * y2;
    
            // stage 0 y0..y1 (x0,y0) - (x1,y1) &  (x0,y0) - (x2,y2)
            // stage 1 y1..y2 (x0,y0) - (x2,x2) &  (x1,y1) - (x3,y3) 
