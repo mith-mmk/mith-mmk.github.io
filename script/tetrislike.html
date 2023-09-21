@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+ <meta viewport="width=device-width, initial-scale=1.0">
+	<title>Tetris Like Game</title>
+	<style>
+		canvas {
+			border: 1px solid white;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="tetris" width="640" height="480"></canvas>
+	<div>
+		<div>操作方法： Spaceでゲームスタート</div>
+		<div>
+			← → でブロックを移動
+			 ￬  ソフトドロップ
+			 ↑ ハードドロップ(hardDrop option時)
+		</div>
+		<div>
+			SPACE でブロックを回転 
+			z 左回転, w 右回転 (reverseRotation option時) 
+			左shift ホールド (hold option時) 
+		</div>
+	</div>
+</body>
+<script src="tetris.js"></script>
+</html>
