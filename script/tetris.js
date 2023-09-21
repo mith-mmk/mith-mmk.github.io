@@ -22,8 +22,6 @@ class Tetris {
   constructor(option = {}) {
     this.option = option
     this.option.drawNextNumber = this.option.drawNextNumber || 1
-    this.startGameEvents = this.option.startGameEvents ||  this.startGameEventSet
-    this.endGameEvents = this.option.endGameEvents || this.endGameEventSet
     const canvasName = this.option.canvas || 'tetris'
     const canvas = document.getElementById(canvasName)
     canvas.style.background = this.option.background ||'black'
@@ -34,19 +32,30 @@ class Tetris {
     this.highscore = this.option.highscore || highscoreFromLocalStorage || 0
     this.canvas = canvas
     this.ctx = ctx
+    //game board height 20 + bottom(1) + top(1) + top margin(4) + bottom margin(1)  = 27
+    // + 10% margin
     let blocksize = Math.floor(height / 30)
-    if (blocksize * 24 > width) { // 10 + 2 + next block(4) + hold (4) + margin(2) = 24
-      blocksize = Math.floor(width / 24)
+    // 10 + 2 + next block(4) + hold (4) + margin(6) = 26 
+    // game board size 10 + sentinel 2 + right side next blocks space 4 + mergin 3
+    // + left side hold block space + mergin 3
+
+    if (blocksize * 26 > width) {
+        
+      blocksize = Math.floor(width / 26)
     }
     this.scale = Math.floor(blocksize / 20)
     this.margin = blocksize / 2
     this.font = `${blocksize}px monospace`
     this.blockSize = blocksize
+    // right and left side margin
     this.GameBoardX = this.blockSize * 4 + this.margin * 4
+    // top margin
     this.GameBoardY = this.blockSize * 4
+    // bottom margin
     this.GameTail = this.blockSize
+    // game board size 10 20 + sentinel
     this.width = 12
-    this.height = 20
+    this.height = 21
     this.canvas.width = (this.blockSize * this.width + this.GameBoardX * 2)
     this.canvas.height = (this.blockSize * this.height + this.GameBoardY + this.GameTail)
     this.board = []
@@ -59,7 +68,7 @@ class Tetris {
   }
 
   waitGame = () => {
-    this.endGameEvents()
+    this.waitGameEvents()
   }
 
   pressSpace = (e) => {
@@ -83,21 +92,27 @@ class Tetris {
     return shuffle
   }
 
-  startGameEventSet = () => {
+  playingGameEvents = () => {
+    const start = document.getElementById('start')
+    start.removeEventListener('click', this.startGame, false)
     document.removeEventListener('keydown', this.pressSpace, false)
     document.addEventListener('keydown', this.keyDownHandler, false)
     document.addEventListener('keyup', this.keyUpHandler, false)
+    document.addEventListener('click', this.clickButtonHandler, false)
   }
 
-  endGameEventSet = () => {
+  waitGameEvents = () => {
     document.removeEventListener('keydown', this.keyDownHandler, false)
     document.removeEventListener('keyup', this.keyUpHandler, false)
+    document.removeEventListener('click', this.clickButtonHandler, false)
     document.addEventListener('keydown', this.pressSpace, false)
+    const start = document.getElementById('start')
+    start.addEventListener('click', this.startGame, false)
   }
 
   startGame = () => {
     this.init()
-    this.startGameEvents()
+    this.playingGameEvents()
 
     if (this.option.useBag) {
       this.bag = this.shuffle()
@@ -148,16 +163,13 @@ class Tetris {
           if ( y == 0 && ( x > this.width / 2 - 4 && x < this.width / 2 + 3 )) {
             this.board[y].push(0)
           } else {
-            this.board[y].push(0xff)
+            this.board[y].push(0xff) // sentinel blocks
           }
         } else {
           this.board[y].push(0)
         }
       }
     }
-    this.score = 0
-    this.level = 1
-    this.gameOver = false
     this.interval = null
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.drawBoard()
@@ -184,7 +196,7 @@ class Tetris {
       }
     }
     if (this.option.guideline) {
-      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'
+      this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'
       for (let i = 0; i < this.board.length; i++) {
         for (let j = 0; j < this.board[i].length; j++) {
           if (this.board[i][j] === 0) {
@@ -200,7 +212,7 @@ class Tetris {
     let y = 0
     this.ctx.clearRect(x, y, this.blockSize * 5, this.blockSize + this.margin)
     y += this.blockSize + this.margin
-    this.ctx.fillText(`Next`, x, y)
+    this.ctx.fillText('Next', x, y)
     y += this.margin 
 
     for (let i = 0; i < this.option.drawNextNumber; i++) {  
@@ -228,7 +240,7 @@ class Tetris {
       this.ctx.clearRect(x, y, this.blockSize * 4 +  this.margin * 2, this.blockSize * 4 + this.margin)
       this.ctx.strokeStyle  = 'white'
       this.ctx.fillStyle = 'white'
-      this.ctx.fillText(`Hold`, x, y)
+      this.ctx.fillText('Hold', x, y)
       y += this.margin
       this.ctx.beginPath()
       this.ctx.moveTo(x, y)
@@ -254,6 +266,7 @@ class Tetris {
     }
     if (block_number == 2) { // I mino
       block.forEach(([x, y]) => {
+        // アフィン変換による一発回転
         newBlock.push([-y , x - 1])
       })
       return newBlock
@@ -308,7 +321,6 @@ class Tetris {
     if (block === null) {
       block = this.BLOCKS[blocktype]
     }
-    // clear rect x = 0 - 11 y = 0 - 19
     this.drawBoard()
     this.ctx.fillStyle = this.BLOCKS_COLOR[blocktype]
     block.forEach(([dx, dy]) => {
@@ -355,7 +367,7 @@ class Tetris {
     this.ctx.shadowBlur = 10
     this.ctx.fillText(`Game Over`, x, y)
     this.ctx.shadowBlur = 0
-    this.endGameEvents()
+    this.waitGameEvents()
 
     clearInterval(this.interval)
     this.interval = null
@@ -417,6 +429,45 @@ class Tetris {
     }
   }
 
+  clickButtonHandler = (e) => {
+    try {
+      const id = e.target.id
+      console.log(id)
+      switch (id) {
+        case 'right':
+          this.moveRight()
+          break
+        case 'left':
+          this.moveLeft()
+          break
+        case 'down':
+          this.moveDown()
+          break
+        case 'rotate':
+          this.rotatiton()
+          break
+        case 'harddrop':
+          if (this.option.hardDrop) {
+            this.moveHardDown()
+          }
+          break
+        case 'reverse':
+          if (this.option.reverseRotation) {
+            this.reverseRotation()
+          }
+          break
+        case 'hold':
+          if (this.option.hold) {
+            this.hold()
+          }
+          break
+        default:
+          break
+      }
+    } catch(e) {
+      // console.log(e)
+    }
+  }
   
   keyUpHandler = (e) => {
   }
@@ -648,6 +699,7 @@ class Tetris {
   }
 }
 
+
 const tetris = new Tetris({
   canvas: 'tetris',
   hardDrop: true,             // ハードドロップを有効にするか？
@@ -660,6 +712,7 @@ const tetris = new Tetris({
   useGhost: true,                // ゴーストを表示するか？
   setHighScore: true,         // ハイスコアをローカルストレージに保存するか？
   background: 'rgb(32, 32, 32)', // background (CSS)
+
   // todo!
   // startGameEvents       // カスタマイズしたイベントハンドラー (ゲーム時)
   // endGameEvents   // ゲームスタート前のイベントハンドラー
