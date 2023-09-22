@@ -94,7 +94,7 @@ class Tetris {
 
   playingGameEvents = () => {
     const start = document.getElementById('start')
-    start.removeEventListener('click', this.startGame, false)
+    start?.removeEventListener('click', this.startGame, false)
     document.removeEventListener('keydown', this.pressSpace, false)
     document.addEventListener('keydown', this.keyDownHandler, false)
     document.addEventListener('keyup', this.keyUpHandler, false)
@@ -107,7 +107,7 @@ class Tetris {
     document.removeEventListener('click', this.clickButtonHandler, false)
     document.addEventListener('keydown', this.pressSpace, false)
     const start = document.getElementById('start')
-    start.addEventListener('click', this.startGame, false)
+    start?.addEventListener('click', this.startGame, false)
   }
 
   startGame = () => {
