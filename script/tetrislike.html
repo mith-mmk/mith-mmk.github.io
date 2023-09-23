@@ -2,7 +2,7 @@
 <html>
 <head>
  <meta charset="utf-8">
- <meta viewport="width=device-width, initial-scale=1.0">
+ <meta viewport="width=device-width, initial-scale=1.0, user-scalable=no">
 	<title>Tetris Like Game</title>
 	<link rel="stylesheet" href="/css/default.css">
 	<style>
@@ -115,4 +115,34 @@
 </div>
 </body>
 <script src="tetris.js"></script>
+<script>
+	const canvas = document.getElementById('tetris');
+	const controler = document.querySelector('.controler');
+
+	const setButtonSize = () => {
+		// windowsのサイズを取得
+		const height = window.innerHeight;
+		const canvasHeight = canvas.height;
+		const diff = height - canvasHeight;
+		const width = window.innerWidth;
+		const size = (width / 5) < (diff / 2.5) ? width / 5 : diff / 2.5 ;
+		// controlerの内のボタンのサイズを変更
+		const buttons = controler.querySelectorAll('button');
+		buttons.forEach(function(button) {
+			button.style.height = size  + 'px';
+			button.style.width = size  + 'px';
+			button.style.fontSize = (size / 2) + 'px';
+		});
+	}
+	setButtonSize();
+
+	// canvasのサイズ変更イベントをトラップ
+	canvas.addEventListener('resize', function() {
+		console.log('resize');
+		setButtonSize();
+		
+	});
+	
+
+</script>
 </html>
