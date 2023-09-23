@@ -7,24 +7,110 @@
 	<style>
 		canvas {
 			border: 1px solid white;
+			z-index: 100;
 		}
+
+		body {
+			background-color: #23312e;
+			color: #fff;
+		}
+
+		button {
+			/* ボタンの大きさ */
+			width: 50px;
+			height: 50px;
+			/* ボタンの文字の大きさ */
+			font-size: 20px;
+			font-weight: 700;
+			/* ボタンの文字の色 */
+			color: #23312e;
+			/* ボタンの背景色 */
+			background: #ff1d1d;
+			/* ボタンの枠線 */
+			border: 1px solid #fff;
+			/* ボタンの角丸 */
+			border-radius: 5px;
+			/* ボタンの影 */
+			box-shadow: 0 5px 0 #666;
+
+			/* ボタンの押し込み具合 */
+			position: relative;
+			top: 0px;
+			left: 0px;
+			/* ボタンの押し込み具合 */
+			transition: top 0.1s, left 0.1s;
+		}
+
+		.controler {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		.manual {
+			display: none;
+		}
+		@media screen and (max-width: 767px) {
+			.manual {
+				display: none;
+			}
+		}
+		/*
+		@media screen and (min-width: 768px) {
+			.manual {
+				position: absolute;
+				display: inline;
+				right: 0px;
+				top: 0px;
+				font-size: 16px;
+				width: fit-content;
+			}
+		}
+		*/
+
 	</style>
 </head>
 <body>
-	<canvas id="tetris" width="640" height="480"></canvas>
+	<div style="display: flex; flex-direction: column;">
 	<div>
+	<canvas id="tetris" width="640" height="480"></canvas>
+	</div>
+	<div class="controler">
+
+		<table>
+			<tr>
+				<td><button id="start">始</button></td>
+				<td><button id="rotate">逆</button></td>
+				<td><button id="harddrop">↓↓</button></td>
+				<td><button id="rotate">回</button></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><button id="hold">固</button</td>
+				<td><button id="left">←</button></td>
+				<td><button id="down">↓</button></td>
+				<td><button id="right">→</button></td>
+			</tr>
+
+		</table>
+	</div>
+	</div>
+
+	<div class="manual">
 		<div>操作方法： Spaceでゲームスタート</div>
 		<div>
-			← → でブロックを移動
-			 ￬  ソフトドロップ
-			 ↑ ハードドロップ(hardDrop option時)
+			← → でブロックを移動<br>
+			 ￬  ソフトドロップ<br>
+			 ↑ ハードドロップ(hardDrop option時)<br>
 		</div>
 		<div>
-			SPACE でブロックを回転 
-			z 左回転, w 右回転 (reverseRotation option時) 
-			左shift ホールド (hold option時) 
+			SPACE でブロックを回転 <br>
+			z 左回転, w 右回転 (reverseRotation option時) <br>
+			左shift ホールド (hold option時) <br>
 		</div>
 	</div>
+
+</div>
 </body>
 <script src="tetris.js"></script>
 </html>
