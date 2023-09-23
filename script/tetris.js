@@ -1,3 +1,10 @@
+class Event {
+
+  
+}
+
+
+
 class Tetris {
   BLOCKS = [
     [[-1,0], [0,0], [1,0], [2,0]], // I 
@@ -718,21 +725,3 @@ class Tetris {
 }
 
 
-const tetris = new Tetris({
-  canvas: 'tetris',
-  hardDrop: true,             // ハードドロップを有効にするか？
-  reverseRotation: true,      // 逆回りを有効にするか？
-  useBag: true,               // ミノの抽選にバッグを使用するか？
-  superRotationSystem: true,  // スーパーローテーションシステムを有効にするか？
-  drawNextNumber: 6,          // 描画するネクストブロックの数
-  hold: true,                 // HOLDを有効にするか？
-  guideline: true,            // 背景にガイドラインを表示するか？
-  useGhost: true,                // ゴーストを表示するか？
-  setHighScore: true,         // ハイスコアをローカルストレージに保存するか？
-  background: 'rgb(32, 32, 32)', // background (CSS)
-
-  // todo!
-  // startGameEvents       // カスタマイズしたイベントハンドラー (ゲーム時)
-  // endGameEvents   // ゲームスタート前のイベントハンドラー
-  // difficult // 難易度
-})
