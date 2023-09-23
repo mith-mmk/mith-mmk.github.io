@@ -26,7 +26,7 @@ class Tetris {
     const canvas = document.getElementById(canvasName)
     canvas.style.background = this.option.background ||'black'
     const ctx = canvas.getContext('2d')
-    const height = window.innerHeight
+    const height = window.innerHeight - 100
     const width = window.innerWidth
     const highscoreFromLocalStorage = localStorage.getItem('highscore')
     this.highscore = this.option.highscore || highscoreFromLocalStorage || 0
