@@ -101,11 +101,11 @@ class Tetris {
     start.addEventListener('touchstart', this.startGame, false)
     const hasTouch = 'ontouchstart' in window
     if (hasTouch) {
-      start.addEventListener('touchstart', this.startGame, false)
-      document.removeEventListener('touchstart', this.clickButtonHandler, false)
+      start.removeEventListener('touchstart', this.startGame, false)
+      document.addEventListener('touchstart', this.clickButtonHandler, false)
     } else {
-      start.addEventListener('click', this.startGame, false)
-      document.removeEventListener('click', this.clickButtonHandler, false)
+      start.removeEventListener('click', this.startGame, false)
+      document.addEventListener('click', this.clickButtonHandler, false)
     }
 
   }
@@ -121,6 +121,7 @@ class Tetris {
       document.removeEventListener('touchstart', this.clickButtonHandler, false)
     } else {
       start.addEventListener('click', this.startGame, false)
+      document.removeEventListener('click', this.clickButtonHandler, false)
     }
   }
 
@@ -444,7 +445,6 @@ class Tetris {
   }
 
   clickButtonHandler = (e) => {
-    e.parentDefault()
     try {
       const id = e.target.id
       console.log(id)
@@ -481,7 +481,10 @@ class Tetris {
       }
     } catch(e) {
       // console.log(e)
+    } finally {
+      e.parentDefault()
     }
+
   }
   
   keyUpHandler = (e) => {
