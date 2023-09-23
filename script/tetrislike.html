@@ -82,7 +82,7 @@
 		<table>
 			<tr>
 				<td><button id="start">始</button></td>
-				<td><button id="rotate">逆</button></td>
+				<td><button id="reverse">逆</button></td>
 				<td><button id="harddrop">↓↓</button></td>
 				<td><button id="rotate">回</button></td>
 				<td></td>
@@ -116,6 +116,8 @@
 </body>
 <script src="tetris.js"></script>
 <script>
+	document.addEventListener('touchmove', function(e) {e.preventDefault();}, {passive: false});
+
 	const canvas = document.getElementById('tetris');
 	const controler = document.querySelector('.controler');
 

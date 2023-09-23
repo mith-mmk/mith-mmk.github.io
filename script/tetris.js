@@ -98,16 +98,30 @@ class Tetris {
     document.removeEventListener('keydown', this.pressSpace, false)
     document.addEventListener('keydown', this.keyDownHandler, false)
     document.addEventListener('keyup', this.keyUpHandler, false)
-    document.addEventListener('click', this.clickButtonHandler, false)
+    start.addEventListener('touchstart', this.startGame, false)
+    const hasTouch = 'ontouchstart' in window
+    if (hasTouch) {
+      start.addEventListener('touchstart', this.startGame, false)
+      document.removeEventListener('touchstart', this.clickButtonHandler, false)
+    } else {
+      start.addEventListener('click', this.startGame, false)
+      document.removeEventListener('click', this.clickButtonHandler, false)
+    }
+
   }
 
   waitGameEvents = () => {
     document.removeEventListener('keydown', this.keyDownHandler, false)
     document.removeEventListener('keyup', this.keyUpHandler, false)
-    document.removeEventListener('click', this.clickButtonHandler, false)
     document.addEventListener('keydown', this.pressSpace, false)
     const start = document.getElementById('start')
-    start.addEventListener('click', this.startGame, false)
+    const hasTouch = 'ontouchstart' in window
+    if (hasTouch) {
+      start.addEventListener('touchstart', this.startGame, false)
+      document.removeEventListener('touchstart', this.clickButtonHandler, false)
+    } else {
+      start.addEventListener('click', this.startGame, false)
+    }
   }
 
   startGame = () => {
@@ -430,6 +444,7 @@ class Tetris {
   }
 
   clickButtonHandler = (e) => {
+    e.parentDefault()
     try {
       const id = e.target.id
       console.log(id)
