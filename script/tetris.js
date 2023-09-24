@@ -279,11 +279,11 @@ class Tetris {
     if (block_number == 1) { // O mino
       return block
     }
-    if (block_number == 2) { // I mino
+    if (block_number == 0) { // I mino
       block.forEach(([x, y]) => {
         // アフィン変換による一発回転
         if (direction == 1) {
-          newBlock.push([-y - 1, x])
+          newBlock.push([-y , x - 1])
         } else {
           newBlock.push([y + 1, -x])
         }
@@ -320,8 +320,6 @@ class Tetris {
       this.drawNextBlock()
     }
   }
-
-
 
   drawBlock = (blocktype, x, y, block = null) => {
     if (block === null) {
@@ -490,7 +488,7 @@ class Tetris {
 
 
 
-  rotatiton = (direction = 1) => { // Right rotation 1 is right -1 is left
+  rotatiton = (direction = 1) => { // direction  1 is right rotation  -1 is left rotation 
     const newBlock = this.blockRatate(this.currentBlock, this.currentBlockNumber, direction)
     if (this.colligionCheck(newBlock, this.current_x, this.current_y)) {
       this.currentBlock = newBlock
@@ -499,7 +497,7 @@ class Tetris {
       return
     }
     if (this.superRotationSystem) {
-      if (this.currentBlock !== 0 ) { // not I, O mino
+      if (this.currentBlock !== 1 ) { // not O mino
         const x = this.current_x
         const y = this.current_y
         const srs = direction == 1 ?[
@@ -527,7 +525,7 @@ class Tetris {
           [[ 1, 0],[-2,  0], [-2, -1], [ 1,  2]], // 3 -> 2
         ]
         const srsIndex = this.rotate % 4
-        const srsBlock = this.currentBlockNumber === 0 ? srsI[srsIndex] : srs[srsIndex]
+        const srsBlock = this.currentBlockNumber === 0 ? srsI[srsIndex] : srs[srsIndex] // I mino?
         srsBlock.forEach(([dx, dy]) => {
           if (this.colligionCheck(newBlock, x + dx, y + dy)) {
             this.current_x = x + dx
