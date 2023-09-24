@@ -160,6 +160,15 @@
 		e.preventDefault()
 	})
 
+	let t = 0;
+  document.documentElement.addEventListener('touchend', function (e) {
+  let now = new Date().getTime();
+  if ((now - t) < 350){
+    e.preventDefault();
+  }
+  t = now;
+  }, false);
+
 	// canvasのサイズ変更イベントをトラップ
 	canvas.addEventListener('resize', function() {
 		console.log('resize');
@@ -185,6 +194,7 @@
   // endGameEvents   // ゲームスタート前のイベントハンドラー
   // difficult // 難易度
 })
+
 
 
 </script>
