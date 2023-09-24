@@ -27,7 +27,7 @@
 			/* ボタンの文字の色 */
 			color: #23312e;
 			/* ボタンの背景色 */
-			background: #ff1d1d;
+			background: rgba(255,255,255,0.8 blue);
 			/* ボタンの枠線 */
 			border: 1px solid #fff;
 			/* ボタンの角丸 */
@@ -81,17 +81,34 @@
 
 		<table>
 			<tr>
-				<td><button id="start">始</button></td>
-				<td><button id="reverse">逆</button></td>
-				<td><button id="harddrop">↓↓</button></td>
-				<td><button id="rotate">回</button></td>
+				<td><button id="start">
+					<svg viewBox="0 0 512 512"><use xlink:href="./button.svg#icon-start"></use></svg>
+				</button></td>
+				<td><button id="reverse">
+					<svg viewBox="0 0 512 512"><use xlink:href="./button.svg#icon-reverse"></use></svg>
+				</button></td>
+				<td><button id="harddrop">
+					<svg viewBox="0 0 512 512"><use xlink:href="./button.svg#icon-harddown"></use></svg>
+				</button></td>
+				<td><button id="rotate">
+					<svg viewBox="0 0 512 512"><use xlink:href="./button.svg#icon-rotate"></use></svg>
+
+				</button></td>
 				<td></td>
 			</tr>
 			<tr>
-				<td><button id="hold">固</button</td>
-				<td><button id="left">←</button></td>
-				<td><button id="down">↓</button></td>
-				<td><button id="right">→</button></td>
+				<td><button id="hold">
+					<svg viewBox="0 0 512 512"><use xlink:href="./button.svg#icon-hold"></use></svg>
+				</button></td>
+				<td><button id="left"> 
+					<svg viewBox="0 0 512 512"><use xlink:href="./button.svg#icon-left"></use></svg>
+				</button></td>
+				<td><button id="down">
+					<svg viewBox="0 0 512 512"><use xlink:href="./button.svg#icon-down"></use></svg>
+				</button></td>
+				<td><button id="right">
+					<svg viewBox="0 0 512 512"><use xlink:href="./button.svg#icon-right"></use></svg>
+				</button></td>
 			</tr>
 
 		</table>
@@ -127,7 +144,7 @@
 		const canvasHeight = canvas.height;
 		const diff = height - canvasHeight;
 		const width = window.innerWidth;
-		const size = (width / 5) < (diff / 2.5) ? width / 5 : diff / 2.5 ;
+		const size = (width / 5) < (diff / 2.5) ? width / 10 : diff / 5 ;
 		// controlerの内のボタンのサイズを変更
 		const buttons = controler.querySelectorAll('button');
 		buttons.forEach(function(button) {
@@ -139,8 +156,8 @@
 	setButtonSize();
 
 	// dblclickイベントを無効化
-	document.addEventListener('dblclick', function() {
-		preventDefault()
+	document.addEventListener('dblclick', function(e) {
+		e.preventDefault()
 	})
 
 	// canvasのサイズ変更イベントをトラップ

@@ -1,9 +1,3 @@
-class Event {
-
-  
-}
-
-
 
 class Tetris {
   BLOCKS = [
@@ -229,6 +223,16 @@ class Tetris {
     }
   }
 
+  drawRect(sx, sy, ex, ey) {
+    this.ctx.beginPath()
+    this.ctx.moveTo(sx, sy)
+    this.ctx.lineTo(ex, sy)
+    this.ctx.lineTo(ex, ey)
+    this.ctx.lineTo(sx, ey)
+    this.ctx.lineTo(sx, sy)
+    this.ctx.stroke()
+  }
+
   drawNextBlock = () => {
     let x = 12 * this.blockSize + this.GameBoardX + this.margin
     let y = 0
@@ -242,13 +246,7 @@ class Tetris {
       this.ctx.strokeStyle  = 'white'
       this.ctx.fillStyle = 'white'
       this.ctx.lineWidth = 2
-      this.ctx.beginPath()
-      this.ctx.moveTo(x, y)
-      this.ctx.lineTo(x + this.blockSize * 4 + this.margin * 2, y)
-      this.ctx.lineTo(x + this.blockSize * 4 + this.margin * 2, y + this.blockSize * 3 + this.margin)
-      this.ctx.lineTo(x, y + this.blockSize * 3 + this.margin)
-      this.ctx.lineTo(x, y)
-      this.ctx.stroke()
+      this.drawRect(x, y, x + this.blockSize * 4 + this.margin * 2, y + this.blockSize * 3 + this.margin)
       this.ctx.fillStyle = this.BLOCKS_COLOR[this.nextBlockNumbers[i]]
       const nextBlock = this.BLOCKS[this.nextBlockNumbers[i]]
       nextBlock.forEach(([dx, dy]) => {
@@ -264,13 +262,8 @@ class Tetris {
       this.ctx.fillStyle = 'white'
       this.ctx.fillText('Hold', x, y)
       y += this.margin
-      this.ctx.beginPath()
-      this.ctx.moveTo(x, y)
-      this.ctx.lineTo(x + this.blockSize * 4 + this.margin * 2, y)
-      this.ctx.lineTo(x + this.blockSize * 4 + this.margin * 2, y + this.blockSize * 3 + this.margin) 
-      this.ctx.lineTo(x, y + this.blockSize * 3  + this.margin)
-      this.ctx.lineTo(x, y)
-      this.ctx.stroke()
+      this.ctx.lineWidth = 2
+      this.drawRect(x, y, x + this.blockSize * 4 + this.margin * 2, y + this.blockSize * 3 + this.margin)
       if (this.holdBlock != null) {
         this.ctx.fillStyle = this.BLOCKS_COLOR[this.holdBlock]
         const holdBlock = this.BLOCKS[this.holdBlock]
@@ -281,7 +274,7 @@ class Tetris {
     }
   }
 
-  blockRatate = (block, block_number) => {
+  blockRatate = (block, block_number, direction = 1) => {
     const newBlock = []
     if (block_number == 1) { // O mino
       return block
@@ -289,29 +282,20 @@ class Tetris {
     if (block_number == 2) { // I mino
       block.forEach(([x, y]) => {
         // アフィン変換による一発回転
-        newBlock.push([-y , x - 1])
+        if (direction == 1) {
+          newBlock.push([-y - 1, x])
+        } else {
+          newBlock.push([y + 1, -x])
+        }
       })
       return newBlock
       }
     block.forEach(([x, y]) => {
-      newBlock.push([y , -x])
-    })
-    return newBlock
-  }
-
-  blockReverseRatate = (block, block_number) => {
-    const newBlock = []
-    if (block_number == 1) { // O mino
-      return block
-    }
-    if (block_number == 2) { // I mino
-      block.forEach(([x, y]) => {
-        newBlock.push([y  + 1, -x])
-      })
-      return newBlock
+      if (direction == 1) {
+        newBlock.push([y , -x])
+      } else {
+        newBlock.push([-y , x])
       }
-    block.forEach(([x, y]) => {
-      newBlock.push([-y , x])
     })
     return newBlock
   }
@@ -435,7 +419,8 @@ class Tetris {
           break
         case 'KeyZ':
           if (this.option.reverseRotation) {
-            this.reverseRotation()
+            //this.reverseRotation()
+            this.rotatiton(-1)
           }
           break
         case 'ShiftLeft':
@@ -452,9 +437,16 @@ class Tetris {
   }
 
   clickButtonHandler = (e) => {
+    let elm = e.target
     try {
-      const id = e.target.id
-      console.log(id)
+      while (elm.nodeName !== 'BUTTON') {
+        elm = elm.parentNode
+        if (elm == null) {
+          return
+        }
+      }
+
+      const id = elm.id
       switch (id) {
         case 'right':
           this.moveRight()
@@ -475,7 +467,8 @@ class Tetris {
           break
         case 'reverse':
           if (this.option.reverseRotation) {
-            this.reverseRotation()
+            // this.reverseRotation()
+            this.rotatiton(-1)
           }
           break
         case 'hold':
@@ -488,8 +481,6 @@ class Tetris {
       }
     } catch(e) {
       // console.log(e)
-    } finally {
-      e.parentDefault()
     }
 
   }
@@ -498,11 +489,12 @@ class Tetris {
   }
 
 
-  rotatiton = () => { // Right rotation
-    const newBlock = this.blockRatate(this.currentBlock, this.currentBlockNumber)
+
+  rotatiton = (direction = 1) => { // Right rotation 1 is right -1 is left
+    const newBlock = this.blockRatate(this.currentBlock, this.currentBlockNumber, direction)
     if (this.colligionCheck(newBlock, this.current_x, this.current_y)) {
       this.currentBlock = newBlock
-      this.rotate = (this.rotate + 1) % 4
+      this.rotate = (this.rotate + direction) % 4
       this.drawBlock(this.currentBlockNumber, this.current_x, this.current_y, this.currentBlock)
       return
     }
@@ -510,25 +502,38 @@ class Tetris {
       if (this.currentBlock !== 0 ) { // not I, O mino
         const x = this.current_x
         const y = this.current_y
-        const srs = [
+        const srs = direction == 1 ?[
           [[-1, 0],[-1, -1], [ 0, 2], [ -1, 2]], // 0 -> 1
           [[ 1, 0],[ 1,  1], [ 0,-2], [  1,-2]], // 1 -> 2
           [[ 1, 0],[ 1, -1], [ 0, 2], [  1, 2]], // 2 -> 3
           [[-2, 0],[-2,  1], [ 0,-2], [ -1,-2]], // 3 -> 0
+        ]:
+        [
+          [[ 1, 0], [ 1, -1], [ 0, 2], [ 1, 2]], // 0 -> 3
+          [[ 1, 0], [ 1,  1], [ 0,-2], [ 1,-2]], // 1 -> 0
+          [[-1, 0], [-1, -1], [ 0, 2], [-1, 2]], // 2 -> 1
+          [[-1, 0], [-1, -1], [ 0,-2], [-1,-2]], // 3 -> 2
         ]
-        const srsI = [
+        const srsI = direction == 1 ?[
           [[-2, 0],[ 1,  0], [-2, -1], [ 1,  2]], // 0 -> 1
           [[ 2, 0],[-1,  0], [ 2,  1], [-1, -2]], // 1 -> 2
           [[ 1, 0],[-2,  0], [ 1, -2], [-2,  1]], // 2 -> 3
           [[-1, 0],[ 2,  0], [-1,  2], [ 2, -1]], // 3 -> 0
+        ]:
+        [
+          [[-1, 0],[ 2,  0], [-1, -2], [ 2,  1]], // 0 -> 3
+          [[ 2, 0],[-1,  0], [ 2, -1], [-1,  2]], // 1 -> 0
+          [[ 1, 0],[-2,  0], [ 1,  2], [-2, -1]], // 2 -> 1
+          [[ 1, 0],[-2,  0], [-2, -1], [ 1,  2]], // 3 -> 2
         ]
         const srsIndex = this.rotate % 4
         const srsBlock = this.currentBlockNumber === 0 ? srsI[srsIndex] : srs[srsIndex]
         srsBlock.forEach(([dx, dy]) => {
-          if (this.colligionCheck(this.currentBlock, x + dx, y + dy)) {
+          if (this.colligionCheck(newBlock, x + dx, y + dy)) {
             this.current_x = x + dx
             this.current_y = y + dy
             this.currentBlock = newBlock
+            this.rotate = (this.rotate + direction) % 4
             this.drawBlock(this.currentBlockNumber, this.current_x, this.current_y, this.currentBlock)
             return
           }
@@ -538,46 +543,13 @@ class Tetris {
     }
   }
 
-  reverseRotation = () => { // Left rotation
-    const newBlock = this.blockReverseRatate(this.currentBlock, this.currentBlockNumber)
-    if (this.colligionCheck(newBlock, this.current_x, this.current_y)) {
-      this.currentBlock = newBlock
-      this.rotate = (this.rotate - 1) % 4
-      this.drawBlock(this.currentBlockNumber, this.current_x, this.current_y, this.currentBlock)
-    } else {
-      const srs = [
-        [[ 1, 0], [ 1, -1], [ 0, 2], [ 1, 2]], // 0 -> 3
-        [[ 1, 0], [ 1,  1], [ 0,-2], [ 1,-2]], // 1 -> 0
-        [[-1, 0], [-1, -1], [ 0, 2], [-1, 2]], // 2 -> 1
-        [[-1, 0], [-1, -1], [ 0,-2], [-1,-2]], // 3 -> 2
-      ]
-      const srsI = [
-        [[-1, 0],[ 2,  0], [-1, -2], [ 2,  1]], // 0 -> 3
-        [[ 2, 0],[-1,  0], [ 2, -1], [-1,  2]], // 1 -> 0
-        [[ 1, 0],[-2,  0], [ 1,  2], [-2, -1]], // 2 -> 1
-        [[ 1, 0],[-2,  0], [-2, -1], [ 1,  2]], // 3 -> 2
-      ]
-      const x = this.current_x
-      const y = this.current_y
-      const srsIndex = this.rotate % 4
-      const srsBlock = this.currentBlockNumber === 0 ? srsI[srsIndex] : srs[srsIndex]
-      srsBlock.forEach(([dx, dy]) => {
-        if (this.colligionCheck(this.currentBlock, x + dx, y + dy)) {
-          this.current_x = x + dx
-          this.current_y = y + dy
-          this.currentBlock = newBlock
-          this.drawBlock(this.currentBlockNumber, this.current_x, this.current_y, this.currentBlock)
-          return
-        }
-      });
-    }
-  }
-
-
-  colligionCheck = (block, x, y) => {
+  colligionCheck = (block, x, y, flag=false) => {
     for (let i = 0; i < block.length; i++) {
       const [dx, dy] = block[i]
-      if (x + dx < 0 || x + dx >= this.width || y + dy < 0 || y + dy >= this.height) {
+      if (flag) {
+        console.log("check", x + dx, y + dy, dx, dy )
+      }
+      if (x + dx < 1 || x + dx >= this.width - 1 || y + dy < 0 || y + dy >= this.height) {
         return false
       }
       if (this.board[y + dy][x + dx] !== 0) {
@@ -632,7 +604,7 @@ class Tetris {
       clearInterval(this.interval)
       this.interval = setInterval(this.moveDown, this.getWaitTime())
     }
-}
+  }
 
   startNewBlock = () => {
     this.currentBlockNumber = this.nextBlockNumbers.shift()
