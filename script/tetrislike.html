@@ -71,6 +71,22 @@
 		*/
 
 	</style>
+	<script>
+		
+	// dblclickイベントを無効化
+	document.addEventListener('dblclick', function(e) {
+		e.preventDefault()
+	})
+
+	let t = 0;
+  document.documentElement.addEventListener('touchend', function (e) {
+  let now = new Date().getTime();
+  if ((now - t) < 350){
+    e.preventDefault();
+  }
+  t = now;
+  }, false);
+	</script>
 </head>
 <body>
 	<div style="display: flex; flex-direction: column;">
@@ -155,19 +171,6 @@
 	}
 	setButtonSize();
 
-	// dblclickイベントを無効化
-	document.addEventListener('dblclick', function(e) {
-		e.preventDefault()
-	})
-
-	let t = 0;
-  document.documentElement.addEventListener('touchend', function (e) {
-  let now = new Date().getTime();
-  if ((now - t) < 350){
-    e.preventDefault();
-  }
-  t = now;
-  }, false);
 
 	// canvasのサイズ変更イベントをトラップ
 	canvas.addEventListener('resize', function() {
