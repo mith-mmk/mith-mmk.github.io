@@ -164,7 +164,7 @@
 		const canvasHeight = canvas.clientHeight;
 		const diff = height - canvasHeight;
 		const width = window.innerWidth;
-		const size = (width / 10) < (diff / 5) ? width / 10 : diff / 5 ;
+		const size = (width / 5) < (diff / 5) ? width / 5 : diff / 5 ;
 		// controlerの内のボタンのサイズを変更
 		const buttons = controler.querySelectorAll('button');
 		buttons.forEach(function(button) {
