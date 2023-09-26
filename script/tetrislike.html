@@ -161,10 +161,10 @@
 	const setButtonSize = () => {
 		// windowsのサイズを取得
 		const height = window.innerHeight;
-		const canvasHeight = canvas.height;
+		const canvasHeight = canvas.clientHeight;
 		const diff = height - canvasHeight;
 		const width = window.innerWidth;
-		const size = (width / 5) < (diff / 2.5) ? width / 5 : diff / 2.5 ;
+		const size = (width / 5) < (diff / 2) ? width / 5 : diff / 2 ;
 		// controlerの内のボタンのサイズを変更
 		const buttons = controler.querySelectorAll('button');
 		buttons.forEach(function(button) {
