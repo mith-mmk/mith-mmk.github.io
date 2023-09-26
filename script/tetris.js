@@ -27,12 +27,27 @@ class Tetris {
     const canvas = document.getElementById(canvasName)
     canvas.style.background = this.option.background ||'black'
     const ctx = canvas.getContext('2d')
-    const height = window.innerHeight - 100
-    const width = window.innerWidth
+
     const highscoreFromLocalStorage = localStorage.getItem('highscore')
     this.highscore = this.option.highscore || highscoreFromLocalStorage || 0
     this.canvas = canvas
     this.ctx = ctx
+
+    this.width = 12
+    this.height = 21
+    this.board = []
+    this.score = 0
+    this.gameOver = false
+    this.interval = null
+    this.canvasResize()
+    this.init()
+    this.waitGame()
+  
+  }
+
+  canvasResize = () => {
+    const height = window.innerHeight - 100
+    const width = window.innerWidth
     //game board height 20 + bottom(1) + top(1) + top margin(4) + bottom margin(1)  = 27
     // + 10% margin
     let blocksize = Math.floor(height / 30)
@@ -55,17 +70,18 @@ class Tetris {
     // bottom margin
     this.GameTail = this.blockSize
     // game board size 10 20 + sentinel
-    this.width = 12
-    this.height = 21
     this.canvas.width = (this.blockSize * this.width + this.GameBoardX * 2)
     this.canvas.height = (this.blockSize * this.height + this.GameBoardY + this.GameTail)
-    this.board = []
-    this.score = 0
-    this.gameOver = false
-    this.interval = null
-    this.init()
-    this.waitGame()
-  
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    this.drawBoard()
+    this.drawScore()
+    if (this.gameOver) {
+      this.drawGameOver()
+    } else {
+      if (this.nextBlockNumbers || this.holdBlock) {
+        this.drawNextBlock()
+      }
+    }
   }
 
   waitGame = () => {
