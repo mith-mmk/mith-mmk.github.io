@@ -1,5 +1,11 @@
 body {
-    background-color: #ffffcc;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
     margin-left: 100px;
     margin-right: 100px;
 }
@@ -20,41 +26,54 @@ p {
 }
 
 h1{
-    background: aqua;
-    color: black;
-    margin: 0
+    background-color: #3498db;
+    text-align: center;
+    padding: 2rem;
+    margin-bottom: 20px;
+    color: #d5e0eb;
 }
 
 h2{
-    background: skyblue;
-    color: black;
-    margin: 0
+    background-color: #2583c2;
+    text-align: center;
+    padding: 1rem;
+    margin-bottom: 20px;
+    color: #d5e0eb;
 }
 
 
-h3{
-    background: #ccccff;
-    color: black ;
-    margin: 0
+h3 {
+    background: #6767ff;
+    color: #d5e0eb;
+    margin: 0;
+    padding-left: 0.5em;
 }
 
 li {
     list-style-type: none;
+    vertical-align: middle;
 }
 
 li.file::before {
     content: "\1f4be";
     font-size: 2rem;
+    position: relative; /* 追加 */
+    top: -0.5em; /* 追加 */
 }
 
 li.outerlink::before {
     content: "\1F517";
     font-size: 2rem;
+    position: relative; /* 追加 */
+    top: -0.5em; /* 追加 */
+
 }
 
 li.link::before {
     content: "\1F4DC";
     font-size: 2rem;
+    position: relative; /* 追加 */
+    top: -0.5em; /* 追加 */
 }
 
 textarea {
@@ -62,11 +81,12 @@ textarea {
 }
 
 main a {
+    color: rgb(64, 93, 255);
     outline: none;
     padding-bottom: 2px;
-    border-right:  1px solid #88881c;
-    border-bottom: 1px solid #88881c;
-    background-color:cornsilk;
+    border-right:  1px solid #89b2ff;
+    border-bottom: 1px solid #4d53a5;
+    background-color:rgb(210, 205, 255);
     margin: 0.5rem;
     font-size: 2rem;;
     height: 2.5rem;
@@ -76,21 +96,25 @@ main a {
     text-decoration: none;
     display: inline-block;
     text-align: center;
+    /* はみ出さない様に調整する */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 main a:visited {
-    color: blue;
+    color: rgb(64, 93, 255);
 }
 
 main a:hover {
     border-color: transparent;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 6px rgba(255, 252, 252, 0.5);
 }
 
 main a:active {
     transform: translate3d(1px, 1px, 1px);
     border-right: 0;
-    color: blue;
+    color: rgb(146, 116, 255);
     border-left: 1px solid #88881c;
     border-top: 1px solid #88881c;
     box-shadow: 0 0 0 0;
@@ -99,19 +123,21 @@ main a:active {
 .back {
     outline: none;
     padding-bottom: 2px;
-    border-right:  1px solid #88881c;
-    border-bottom: 1px solid #88881c;
-    background-color:cornsilk;
+    border-right:  1px solid #d8daff;
+    border-bottom: 1px solid #d8daff;
+    background-color:#60c0ff;
     margin: 0.2em;
-    font-size: 2rem;
-    height: 1.8em;
-    line-height: 1.8em;
-    width: 4em; 
-    border-radius: 0.5em;
+    font-size: 1.6em;
+    height: 1.6em;
+    line-height: 1.6em;
+    width: 3em; 
+    border-radius: 0.2em;
     text-decoration: none;
     display: inline-block;
     text-align: center;
+    color: #d5ecff;
 }
+
 
 .button {
     padding: 0.1em;
@@ -123,24 +149,27 @@ main a:active {
 }
 
 .button2 {
-    border-right:  0.05em solid #88881c;
-    border-bottom: 0.05em solid #88881c;
-    background-color: cornsilk;
-    color: #334aff;
-    padding: 0.4em;
+    border-right:  1px solid #d8daff;
+    border-bottom: 1px solid #d8daff;
+    background-color:#60c0ff;
+    color: #c0c7ff;
+    padding: 0.2em;
     height: 1.0em;
     margin: 0.2em;
     width: 3em;
-    border-radius: 0.5em;
+    border-radius: 0.2em;
     line-height: 1.0em;
     font-size: 1.6rem;
 }
 
+
+
 summary {
     display: inline-block;
-    border-right:  1px solid #88881c;
-    border-bottom: 1px solid #88881c;
-    background-color:cornsilk;
+    border-right:  1px solid #d8daff;
+    border-bottom: 1px solid #d8daff;
+    background-color:#60c0ff;
+    color: #fbfcff;
     padding: 0.5rem;
     border-radius: 5px;
 }
@@ -164,7 +193,7 @@ summary:hover{
     text-decoration: none;
     background-image: url('/icon/gotop.svg');
     color: white;
-    background-color: darkgoldenrod;
+    background-color: rgb(91, 93, 255);
     width: 2em;
     height: 2em;
     border-radius: 50%;
