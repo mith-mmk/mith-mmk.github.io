@@ -9,9 +9,11 @@
 <header>
   <script src="/js/default.js"></script>
   <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
+  <a name="header" class="dummy"></a>
+  <h1>アフィン変換サンプル</h1>
 </header>
-<a name="header" class="dummy"></a>
 <body>
+    
   <main>
   <div>
     <div><p>枠内に画像をドラッグ＆ドロップしてください</p></div>
@@ -36,7 +38,10 @@
   </div>
   <script type="module" src="./js/load-affine.js"></script>
   <div style="width: 900px;">
-  <div>コードが原型を留めなくなるのでシンプルなコードを置いておく(2022/04/10 逆アフィン変換が一部間違ってたのでfix</div>
+  <div>コードが原型を留めなくなるのでシンプルなコードを置いておく</div><div>2022/04/10 逆アフィン変換が一部間違ってたのでfix</div>
+  <details>
+    <summary>
+        ソースコードを表示</summary>
   <pre class="prettyprint lang-rust">
 
    /*
@@ -503,6 +508,8 @@
        }   
    }
   </pre>
+</details>
+
 </div>
 </main>
 <footer>
