@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta viewport="width=device-width, initial-scale=1.0">
   <title>WASMサンプル</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="/css/default.css">
-</head>
-<header>
   <script src="/js/default.js"></script>
-  <a name="header" class="dummy"></a>
+</head>
+<body>
+<header>
+  <h1>アフィン変換サンプル</h1>
 </header>
 
-<body>
-<main>
+  <main>
   <div>
     <div><p>枠内に画像をドラッグ＆ドロップしてください</p></div>
      <div><canvas id="canvas" width="512" height="512" style="border: double gray 4px;"></canvas></div>
@@ -44,7 +45,8 @@
   <script type="module" src="./js/affine.js"></script>
 </main>
 <footer>
-
+<div class="goback"><a href="../index.html" class="back">戻る</a></div>
+<div class="gotop"><a href="#header"></a></div>
 </footer>
 </body>
 </html>
