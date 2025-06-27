@@ -1,0 +1,21 @@
+{
+  "name": "paint",
+  "collaborators": [
+    "mith-mmk <47620686+mith-mmk@users.noreply.github.com>"
+  ],
+  "version": "0.0.22",
+  "license": "MIT",
+  "files": [
+    "paint_bg.wasm",
+    "paint.js",
+    "paint.d.ts"
+  ],
+  "module": "paint.js",
+  "types": "paint.d.ts",
+  "sideEffects": false,
+  "keywords": [
+    "wasm",
+    "paint",
+    "graphics"
+  ]
+}
