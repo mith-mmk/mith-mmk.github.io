@@ -60,22 +60,3 @@ footer {
     color: #fff;
     margin-top: auto;
 }
-
-footer a {
-    color: #fff;
-    text-decoration: none;
-    background-color: azure;
-    color: black;
-    padding: 10px;
-}
-
-main a {
-    color: #fff;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    text-decoration: none;
-    background-color: azure;           
-    color: black;
-    padding: 10px;
-}    
