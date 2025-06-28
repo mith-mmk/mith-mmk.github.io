@@ -18,6 +18,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #333;
     font-size: 2em;
     font-weight: bold;
     cursor: pointer;
@@ -25,6 +26,22 @@
     
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
+
+.puzzle-tile[data-value="1"] { background-color: #ff9999; }
+.puzzle-tile[data-value="2"] { background-color: #99ff99; }
+.puzzle-tile[data-value="3"] { background-color: #9999ff; }
+.puzzle-tile[data-value="4"] { background-color: #ffff99; }
+.puzzle-tile[data-value="5"] { background-color: #ff99ff; }
+.puzzle-tile[data-value="6"] { background-color: #99ffff; }
+.puzzle-tile[data-value="7"] { background-color: #ffcc99; }
+.puzzle-tile[data-value="8"] { background-color: #cc99ff; }
+.puzzle-tile[data-value="9"] { background-color: #99ccff; }
+.puzzle-tile[data-value="10"] { background-color: #ffccff; }
+.puzzle-tile[data-value="11"] { background-color: #ccff99; }
+.puzzle-tile[data-value="12"] { background-color: #cc99cc; }
+.puzzle-tile[data-value="13"] { background-color: #ff9999; }
+.puzzle-tile[data-value="14"] { background-color: #99ffcc; }
+.puzzle-tile[data-value="15"] { background-color: #ccffcc; }
 
 .puzzle-tile.empty {
     background-color: #e0e0e0;
