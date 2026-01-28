@@ -1,18 +1,21 @@
 {
   "name": "paint",
+  "type": "module",
   "collaborators": [
     "mith-mmk <47620686+mith-mmk@users.noreply.github.com>"
   ],
-  "version": "0.0.22",
+  "version": "0.0.23",
   "license": "MIT",
   "files": [
     "paint_bg.wasm",
     "paint.js",
     "paint.d.ts"
   ],
-  "module": "paint.js",
+  "main": "paint.js",
   "types": "paint.d.ts",
-  "sideEffects": false,
+  "sideEffects": [
+    "./snippets/*"
+  ],
   "keywords": [
     "wasm",
     "paint",
