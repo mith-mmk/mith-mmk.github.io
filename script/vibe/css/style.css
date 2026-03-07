@@ -78,4 +78,9 @@ main a {
     background-color: azure;           
     color: black;
     padding: 10px;
-}    
+}
+
+.gotop a:hover {
+    opacity: 0.60;
+    color: grey;
+}
