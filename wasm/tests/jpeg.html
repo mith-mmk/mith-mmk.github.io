@@ -1,27 +1,32 @@
+
 <!DOCTYPE html>
 <html>
 <head>
   <meta viewport="width=device-width, initial-scale=1.0">
   <title>WASMサンプル</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="/css/default.css">
+  <link rel="stylesheet" href="./css/default.css">
+  <link rel="stylesheet" href="./css/verbose.css">
 </head>
 <body>
+<header>
+  <div>Jpeg Decoder</div>
+</header>
 <main>
-  <header> 
-  <h1>WML2</h1>
-  </header>
   <div>
-    <table border="1">
-      <td align="left">枠内に画像をドラッグ＆ドロップしてください</td>
+    <table>
+      <td style="text-align: left;">
+        <div><label for="upload">アップロード</label> <input type="file" id="upload"></div>
+        <div>もしくは枠内に画像をドラッグ＆ドロップしてください</div>
+        <div>jpeg, gif, png, tiff, bmp, magに対応</div>
+      </td>
       <tr>
-        <td><canvas id="canvas" width="1024" height="768"></canvas></td>
+        <td  style="border: thick double"><canvas id="canvas" width="1024" height="768"></canvas></td>
       </tr>
     </table>
   </div>
-  <div style="background-color: black;color: wheat; max-height: 200px;overflow: scroll;">
-  <code id='wasm_verbose'></code>
-  </div>
+  <div id='wasm_verbose'></div>
+</main>  
   <script type="module" src="./js/jpeg.js">
 
 
@@ -30,6 +35,7 @@
 
 </main>
 <footer>
+
 <div class="goback"><a href="../index.html" class="back">戻る</a></div>
 <div class="gotop"><a href="#header"></a></div>
 </footer>
