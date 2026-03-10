@@ -198,6 +198,11 @@ function passArray8ToWasm0(arg, malloc) {
     return ptr;
 }
 
+function getArrayU8FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
+}
+
 function passArrayJsValueToWasm0(array, malloc) {
     const ptr = malloc(array.length * 4, 4) >>> 0;
     const mem = getDataViewMemory0();
@@ -458,6 +463,16 @@ export class Universe {
         wasm.universe_imageDecoder(this.__wbg_ptr, ptr0, len0, verbose);
     }
     /**
+     * @param {number} verbose
+     * @returns {Uint8Array}
+     */
+    imageEncoder(verbose) {
+        const ret = wasm.universe_imageEncoder(this.__wbg_ptr, verbose);
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
+    }
+    /**
      * @param {number} sx
      * @param {number} sy
      * @param {number} ey
@@ -647,6 +662,17 @@ export class Universe {
         const ptr0 = passArray8ToWasm0(buffer, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
         wasm.universe_jpegDecoderSelectCanvas(this.__wbg_ptr, ptr0, len0, verbose, number);
+    }
+    /**
+     * @param {number} number
+     * @param {number} verbose
+     * @returns {Uint8Array}
+     */
+    imageEncoderSelectCanvas(number, verbose) {
+        const ret = wasm.universe_imageEncoderSelectCanvas(this.__wbg_ptr, number, verbose);
+        var v1 = getArrayU8FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        return v1;
     }
     /**
      * @param {number} width

@@ -40,6 +40,7 @@ export class Universe {
   bezierCurve3(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x4: number, y4: number, color: number): void;
   getImageData(no: number): ImageData;
   imageDecoder(buffer: Uint8Array, verbose: number): void;
+  imageEncoder(verbose: number): Uint8Array;
   lineWithPen(sx: number, sy: number, ey: number, ex: number, color: number): void;
   static newOnWorker(width: number, height: number): Universe;
   getBuffer(): number;
@@ -64,6 +65,7 @@ export class Universe {
   drawSelectCanvas2(width: number, height: number, no: number): void;
   quadraticCurveAntialias(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, a: number, color: number, size: number): void;
   jpegDecoderSelectCanvas(buffer: Uint8Array, verbose: number, number: number): void;
+  imageEncoderSelectCanvas(number: number, verbose: number): Uint8Array;
   constructor(width: number, height: number);
   fill(sx: number, sy: number, color: number): void;
   line(sx: number, sy: number, ex: number, ey: number, color: number): void;
@@ -128,6 +130,8 @@ export interface InitOutput {
   readonly universe_getLayerAlpha: (a: number, b: number, c: number) => number;
   readonly universe_getWidth: (a: number) => number;
   readonly universe_imageDecoder: (a: number, b: number, c: number, d: number) => void;
+  readonly universe_imageEncoder: (a: number, b: number) => [number, number];
+  readonly universe_imageEncoderSelectCanvas: (a: number, b: number, c: number) => [number, number];
   readonly universe_imageLoader: (a: number, b: number, c: number, d: number) => void;
   readonly universe_isAnimation: (a: number) => number;
   readonly universe_jpegDecoderSelectCanvas: (a: number, b: number, c: number, d: number, e: number) => void;

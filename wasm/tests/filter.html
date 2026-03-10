@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta viewport="width=device-width, initial-scale=1.0">
   <title>WASMサンプル</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="/css/default.css">
 </head>
-<body>
 <header>
-    <h1>フィルターサンプル</h1>
+  <script src="/js/default.js"></script>
+  <a name="header" class="dummy"></a>
 </header>
-<main>
 
+<body>
+<main>
   <div>
-    <div><p>枠内に画像をドラッグ＆ドロップしてください</p></div>
+    <div><label for="upload">アップロード</label> <input type="file" id="upload"></div>
+    <div>もしくは枠内に画像をドラッグ＆ドロップしてください</div>
+    <div>jpeg, gif, png, tiff, bmp, magに対応</div>
      <div><canvas id="canvas" width="512" height="512" style="border: double gray 4px;"></canvas></div>
      <div>出力</div>
     <span>使うフィルタ</span>
@@ -23,7 +25,7 @@
       <option value="dilate">拡張</option>
       <option value="smooth">スムース(smooth)</option>
       <option value="blur">ぼかし(blur)</option>
-      <option value="shardow">シャドウ</option>
+      <option value="shadow">シャドウ</option>
       <option value="edgeX">エッジX（ソーベルX）</option>
       <option value="edgeY">エッジY（ソーベルY）</option>
       <option value="canny">Canny(簡易)</option>
@@ -37,7 +39,9 @@
       <option value="grayscale">グレイスケール</option>
     </select></p>  
   <div><canvas id="canvas2" width="512" height="512" style="border: double gray 4px  4px 4px 4px;"></canvas></div>
+  <div><button id="saver">保存</button></div>
   </div>
+  
   <script type="module" src="./js/filter.js"></script>
 </main>
 <footer>
@@ -46,3 +50,4 @@
 </footer>
 </body>
 </html>
+
