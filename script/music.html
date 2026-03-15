@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text Score Player</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+    }
+    textarea {
+      width: 100%;
+      height: 24rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 14px;
+    }
+    button {
+      margin-right: 0.5rem;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .row {
+      margin: 1rem 0;
+    }
+    label {
+      margin-right: 1rem;
+    }
+  </style>
+  <link rel="stylesheet" href="/css/default.css">
+</head>
+<body>
+<header>
+    <script src="/js/default.js"></script>
+    <a name="header" class="dummy"></a>
+    <h1>テキスト楽譜プレイヤー</h1>
+  </header>
+<main>
+  <p>
+    形式は <code>音名 長さ</code>。<br />
+    例: <code>C4 0.25</code>, <code>R 0.5</code><br />
+    長さは「全音符=1」。四分音符は 0.25。
+  </p>
+
+  <div class="row">
+    <label>テンポ: <input id="tempo" type="number" value="120" min="30" max="300" /></label>
+    <label>波形:
+      <select id="waveform">
+        <option value="sine">sine</option>
+        <option value="triangle">triangle</option>
+        <option value="square">square</option>
+        <option value="sawtooth">sawtooth</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="row">
+    <button id="playBtn">再生</button>
+    <button id="stopBtn">停止</button>
+  </div>
+
+  <textarea id="score">
+```
+# TEMPO 120 / 4-4
+# CHORD PROGRESSION
+# | C | G | AM | F | C | G | F | G | C | AM | F | G | EM | F | C | G |
+
+# MEASURE 1 (C)
+C5 0.5
+G4 0.5
+E4 0.5
+G4 0.5
+C5 0.5
+R 0.25
+C5 0.25
+D5 0.5
+E5 0.5
+
+# MEASURE 2 (G)
+D5 0.5
+B4 0.5
+G4 0.5
+B4 0.5
+D5 0.5
+R 0.25
+D5 0.25
+E5 0.5
+D5 0.5
+
+# MEASURE 3 (AM)
+C5 0.5
+A4 0.5
+E4 0.5
+A4 0.5
+C5 0.5
+R 0.25
+C5 0.25
+D5 0.5
+E5 0.5
+
+# MEASURE 4 (F)
+C5 0.5
+A4 0.5
+F4 0.5
+A4 0.5
+C5 0.5
+R 0.25
+C5 0.25
+D5 0.5
+C5 0.5
+
+# MEASURE 5 (C)
+E5 0.5
+C5 0.5
+G4 0.5
+C5 0.5
+E5 0.5
+D5 0.25
+C5 0.25
+G4 0.5
+E4 0.5
+
+# MEASURE 6 (G)
+D5 0.5
+B4 0.5
+G4 0.5
+B4 0.5
+D5 0.5
+R 0.25
+D5 0.25
+E5 0.5
+D5 0.5
+
+# MEASURE 7 (F)
+C5 0.5
+A4 0.5
+F4 0.5
+A4 0.5
+C5 0.5
+R 0.25
+C5 0.25
+D5 0.5
+C5 0.5
+
+# MEASURE 8 (G)
+B4 0.5
+G4 0.5
+D5 0.5
+B4 0.5
+G4 0.5
+R 0.25
+G4 0.25
+A4 0.5
+B4 0.5
+
+# MEASURE 9 (C)
+C5 0.5
+E5 0.5
+G4 0.5
+E5 0.5
+C5 0.5
+R 0.25
+C5 0.25
+D5 0.5
+E5 0.5
+
+# MEASURE 10 (AM)
+A4 0.5
+C5 0.5
+E5 0.5
+C5 0.5
+A4 0.5
+R 0.25
+A4 0.25
+B4 0.5
+C5 0.5
+
+# MEASURE 11 (F)
+A4 0.5
+C5 0.5
+F4 0.5
+A4 0.5
+C5 0.5
+R 0.25
+C5 0.25
+D5 0.5
+C5 0.5
+
+# MEASURE 12 (G)
+B4 0.5
+D5 0.5
+G4 0.5
+B4 0.5
+D5 0.5
+R 0.25
+D5 0.25
+E5 0.5
+D5 0.5
+
+# MEASURE 13 (EM)
+E5 0.5
+B4 0.5
+G4 0.5
+B4 0.5
+E5 0.5
+D5 0.25
+C5 0.25
+B4 0.5
+G4 0.5
+
+# MEASURE 14 (F)
+C5 0.5
+A4 0.5
+F4 0.5
+A4 0.5
+C5 0.5
+R 0.25
+C5 0.25
+D5 0.5
+C5 0.5
+
+# MEASURE 15 (C)
+E5 0.5
+C5 0.5
+G4 0.5
+E5 0.5
+C5 0.5
+R 0.25
+C5 0.25
+D5 0.5
+E5 0.5
+
+# MEASURE 16 (G → C RESOLVE)
+D5 0.5
+B4 0.5
+G4 0.5
+B4 0.5
+C5 1.0
+R 0.5
+C5 0.5
+```
+
+  </textarea>
+<p>
+  大昔は、楽譜をテキストで書いていたから、それとsin波生成器を組み合わせれば生成AIで音楽作れるなと思って適当に作らせたもの。<br>
+  1. sin波生成器をいじると簡易シンセになる<br>
+  2. 単音になっているが和音にも出来るはず<br>
+  3. なんならコードや打楽器も埋め込めるはず<br>
+  4. 波形をtriangleにするとレトロゲームっぽい<br>
+  5. それっぽいような違うような。
+</p> 
+<h3>こういうプロンプト</h3>
+<div style="background-color: black; color: blanchedalmond;padding: 0.5em;">
+<pre>
+ゲーム風の音楽を書いてください
+
+テキスト楽譜で作曲してください。
+
+出力形式:
+音名 長さ
+
+例:
+C4 0.25
+E4 0.25
+G4 0.5
+B#4 0.5 # シャープ
+Bb4 0.5 # フラット
+
+ルール:
+
+・キーはCメジャー（気に入らなかったら変えても良いです）
+・音符は大文字のみ
+・テンポ120
+・4/4拍子
+・長さは全音符=4.0
+・四分音符=1.0
+・休符は R
+・コメントは #で始める
+
+構成:
+30秒前後で納める。
+休符や16音符など利用し歯切れ良くする
+
+コード進行:
+最初に設計してから作成すること
+メロディはスケール内音のみ使用。
+
+疾走感のあるメロディにしてください
+音域は C4〜E5になるべくおさまるように。
+ゲーム音楽風でお願いいたします。
+
+説明文は不要。楽譜のみ出力。
+</pre>
+</div>
+</p>
+</main>
+<footer>
+  <div class="goback"><a href="./" class="back">戻る</a></div>
+  <div class="gotop"><a href="#header">　</a></div>
+</footer>
+  <script>
+    let audioContext = null;
+    let activeNodes = [];
+    let scheduledTimeouts = [];
+
+    function noteToMidi(note) {
+      const match = note.match(/^([A-G])([#b]?)(-?\d+)$/);
+      if (!match) {
+        throw new Error("不正な音名: " + note);
+      }
+
+      const [, letter, accidental, octaveStr] = match;
+      const octave = parseInt(octaveStr, 10);
+
+      const base = {
+        C: 0,
+        D: 2,
+        E: 4,
+        F: 5,
+        G: 7,
+        A: 9,
+        B: 11
+      }[letter];
+
+      let semitone = base;
+      if (accidental === "#") semitone += 1;
+      if (accidental === "b") semitone -= 1;
+
+      return (octave + 1) * 12 + semitone;
+    }
+
+    function midiToFreq(midi) {
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function noteToFreq(note) {
+      return midiToFreq(noteToMidi(note));
+    }
+
+    function parseScore(text) {
+      const lines = text.split(/\r?\n/);
+      const events = [];
+    
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line || line.startsWith("#") || line.startsWith("//")) continue;
+      
+        const parts = line.split(/\s+/);
+      
+        for (let i = 0; i < parts.length; i += 2) {
+          const pitch = parts[i];
+          let duration = parseFloat(parts[i + 1]);
+        
+          if (!pitch || !Number.isFinite(duration)) continue;
+        
+          if (duration <= 0) continue; // 0.0対策
+        
+          duration = Math.round(duration * 1000) / 1000; // 小数整理
+        
+          events.push({ pitch, duration });
+        }
+      }
+    
+      return events;
+    }
+
+    function stopAll() {
+      for (const node of activeNodes) {
+        try {
+          if (typeof node.stop === "function") node.stop();
+        } catch (_) {}
+        try {
+          node.disconnect();
+        } catch (_) {}
+      }
+      activeNodes = [];
+
+      for (const id of scheduledTimeouts) {
+        clearTimeout(id);
+      }
+      scheduledTimeouts = [];
+    }
+
+    async function ensureAudioContext() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === "suspended") {
+        await audioContext.resume();
+      }
+      return audioContext;
+    }
+
+    function scheduleNote(ctx, startTime, durationSec, freq, waveform) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = waveform;
+      osc.frequency.setValueAtTime(freq, startTime);
+
+      const attack = Math.min(0.01, durationSec * 0.2);
+      const release = Math.min(0.05, durationSec * 0.3);
+      const sustainLevel = 0.18;
+
+      gain.gain.setValueAtTime(0.0, startTime);
+      gain.gain.linearRampToValueAtTime(sustainLevel, startTime + attack);
+      gain.gain.setValueAtTime(sustainLevel, startTime + Math.max(attack, durationSec - release));
+      gain.gain.linearRampToValueAtTime(0.0, startTime + durationSec);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + durationSec + 0.02);
+
+      activeNodes.push(osc, gain);
+    }
+
+    async function playScore() {
+      stopAll();
+      const ctx = await ensureAudioContext();
+
+      const scoreText = document.getElementById("score").value;
+      const tempo = parseFloat(document.getElementById("tempo").value);
+      const waveform = document.getElementById("waveform").value;
+
+      if (!Number.isFinite(tempo) || tempo <= 0) {
+        throw new Error("テンポが不正");
+      }
+
+      const events = parseScore(scoreText);
+      const quarterSec = 60 / tempo;
+      const wholeSec = quarterSec;
+
+      let t = ctx.currentTime + 0.05;
+
+      for (const ev of events) {
+        const durationSec = ev.duration * wholeSec;
+
+        if (ev.pitch !== "R") {
+          const freq = noteToFreq(ev.pitch);
+          scheduleNote(ctx, t, durationSec, freq, waveform);
+        }
+
+        t += durationSec;
+      }
+
+      const endDelayMs = Math.max(0, (t - ctx.currentTime) * 1000);
+      const timerId = setTimeout(() => {
+        stopAll();
+      }, endDelayMs + 100);
+
+      scheduledTimeouts.push(timerId);
+    }
+
+    document.getElementById("playBtn").addEventListener("click", () => {
+      playScore().catch(err => {
+        console.error(err);
+        alert(err.message);
+      });
+    });
+
+    document.getElementById("stopBtn").addEventListener("click", () => {
+      stopAll();
+    });
+  </script>
+</body>
+</html>
