@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ブラウザDAW Studio</title>
+  <link href="css/daw.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="wrap">
+    <h1>ブラウザDAW Studio 🎹</h1>
+    <div class="subtitle">和音対応、複数パターンのソングモード、MIDIエクスポート、テキスト楽譜DSLの相互変換まで一気に突っ込んだ。もうMVPじゃなくて、普通に自作シーケンサの初号機やね 😏</div>
+
+    <div class="panel toolbar">
+      <div class="field">
+        <label for="tempo">テンポ</label>
+        <input id="tempo" type="number" min="40" max="260" value="120" />
+      </div>
+      <div class="field">
+        <label for="swing">スウィング</label>
+        <input id="swing" type="range" min="0" max="0.3" step="0.01" value="0" />
+        <div class="value" id="swingValue">0%</div>
+      </div>
+      <div class="field">
+        <label for="master">マスター音量</label>
+        <input id="master" type="range" min="0" max="1" step="0.01" value="0.75" />
+        <div class="value" id="masterValue">75%</div>
+      </div>
+      <div class="field">
+        <label>再生</label>
+        <div class="small-buttons">
+          <button id="playBtn">▶ 再生</button>
+          <button id="stopBtn" class="secondary">■ 停止</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>編集</label>
+        <div class="small-buttons">
+          <button id="clearPatternBtn" class="secondary">現パターン全消し</button>
+          <button id="demoBtn" class="secondary">デモ投入</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>エクスポート</label>
+        <div class="small-buttons">
+          <button id="downloadMidiBtn" class="warn">MIDI保存</button>
+          <button id="downloadDSLBtn" class="secondary">DSL保存</button>
+          <button id="copyDslBtn" class="secondary">DSLをコピー</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>インポート</label>
+        <div class="small-buttons">
+          <label><span class="file-button">ファイルを読み込み</span>
+          <input id="uploadDslBtn" type="file" hidden>
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label>状態</label>
+        <div id="status" class="value">停止中</div>
+      </div>
+    </div>
+
+    <div class="row3">
+      <div class="panel">
+        <h2>DSL</h2>
+        <textarea id="dslArea"></textarea>
+        <div class="small-buttons" style="margin-top:10px">
+          <button id="loadDslBtn">DAWに読み込む</button>
+          <!--
+          <button id="importJsonBtn" class="secondary">JSONからDSLへ</button>
+          <button id="exportJsonBtn" class="secondary">JSONで表示</button>
+          -->
+          <button id="loadDemoDslBtn" class="secondary">DSLサンプル</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>DSL仕様</h2>
+        <div class="legend mono"><pre>
+@tempo 120
+@swing 0.06
+@song A A B A
+
+@pattern A
+@track lead square vol=0.8 octave=0
+E5 . D5 . [C5,E5,G5] . A4 . G4 . E4 . D4 . C4 .
+@track drums kit vol=0.9
+K H . H S H . H K H C H S H . H
+
+@pattern B
+...
+        </pre></div>
+      </div>
+      <div class="panel">
+        <h2>メモ</h2>
+        <div class="legend">
+          ・和音は <span class="mono">[C4,E4,G4]</span>。休符は <span class="mono">.</span>。<br>
+          ・ドラムは <span class="mono">K=Kick S=Snare H=Hat C=Clap</span>。複数同時は <span class="mono">[K,H]</span>。<br>
+          ・MIDIは type-0 的にイベントを1本へマージして書き出す。実用には十分。<br>
+          ・AIに投げるならこのDSLの方が圧倒的にマシ。自由作文を許すと奴らすぐ講義始めるからな 😂<br>
+          ・《DSL読み込み》ボタンを押してな👍
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <div class="row2">
+      <div class="panel">
+        <h2>パターン管理</h2>
+        <div class="pill-row" id="patternPills"></div>
+        <div class="small-buttons" style="margin-top:10px">
+          <button id="addPatternBtn">＋ パターン追加</button>
+          <button id="dupPatternBtn" class="secondary">複製</button>
+          <button id="delPatternBtn" class="danger">削除</button>
+        </div>
+        <div class="legend" style="margin-top:10px">
+          ・各トラックは <span class="mono">複数行ON</span> で和音。もう1ステップ1音縛りは卒業や。<br>
+          ・再生はソングシーケンス順。空なら今のパターンだけループ。<br>
+          ・パターン名は <span class="mono">A, B, C...</span> 形式。地味だけど一番壊れにくい。
+        </div>
+      </div>
+      <div class="panel">
+        <h2>ソングモード</h2>
+        <div class="field">
+          <label for="songSequence">パターン順（空白区切り）</label>
+          <textarea id="songSequence" class="song-seq">A A B A</textarea>
+        </div>
+        <div class="small-buttons" style="margin-top:10px">
+          <button id="normalizeSongBtn" class="secondary">整形</button>
+          <button id="patternLoopBtn" class="secondary">現パターンのみ</button>
+        </div>
+        <div class="legend" style="margin-top:10px">
+          例: <span class="mono">A A B A C C B A</span><br>
+          これでイントロ→Aメロ→Bメロ→サビごっこができる。人類、また少しDAWに近づいた。
+        </div>
+      </div>
+    </div>
+
+    <div id="tracks" class="tracks"></div>
+
+
+  <script src="js/daw.js"></script>
+</body>
+</html>
