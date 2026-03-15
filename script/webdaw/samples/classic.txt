@@ -1,0 +1,33 @@
+@tempo 120
+@swing 0.00
+@song A A B C A
+
+@pattern A
+@track lead square vol=0.78 octave=0
+E5 D5 C5 B4 C5 D5 E5 . D5 C5 B4 A4 G4 A4 B4 C5
+@track pad triangle vol=0.50 octave=-1
+C4 . G3 . E3 . G3 . C4 . G3 . E3 . G3 .
+@track bass sawtooth vol=0.68 octave=-2
+C2 . G1 . C2 . G1 . C2 . G1 . C2 . G1 .
+@track drums kit vol=0.88
+K . H . K . H . K . H . K . H .
+
+@pattern B
+@track lead square vol=0.78 octave=0
+G4 A4 B4 C5 D5 C5 B4 A4 G4 F4 E4 D4 C4 D4 E4 F4
+@track pad triangle vol=0.50 octave=-1
+A3 . E3 . C4 . E3 . A3 . E3 . C4 . E3 .
+@track bass sawtooth vol=0.68 octave=-2
+A1 . E1 . A1 . E1 . A1 . E1 . A1 . E1 .
+@track drums kit vol=0.88
+K . H . K . H . K . H . K . H . K . H .
+
+@pattern C
+@track lead square vol=0.78 octave=0
+F4 G4 A4 B4 C5 B4 A4 G4 F4 E4 D4 C4 B4 C5 D5 E5
+@track pad triangle vol=0.50 octave=-1
+F3 . C3 . A2 . C3 . F3 . C3 . A2 . C3 .
+@track bass sawtooth vol=0.68 octave=-2
+F1 . C1 . F1 . C1 . F1 . C1 . F1 . C1 .
+@track drums kit vol=0.88
+K . H . K . H . K . H . K . H . K . H .

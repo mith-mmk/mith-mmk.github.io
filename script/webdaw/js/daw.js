@@ -1,5 +1,5 @@
 (()=> {
-const STEPS = 16;
+    const STEPS = 16;
     const melodicTracks = [
       { id: 'lead', name: 'Lead', kind: 'melodic', waveform: 'square', volume: 0.78, octaveShift: 0, notes: ['E5','D5','C5','B4','A4','G4','F4','E4','D4','C4'] },
       { id: 'pad', name: 'Pad', kind: 'melodic', waveform: 'triangle', volume: 0.5, octaveShift: -1, notes: ['C5','B4','A4','G4','F4','E4','D4','C4','B3','A3'] },
@@ -574,6 +574,24 @@ const STEPS = 16;
     }
 
     function loadDemo() {
+      console.log('load demo dsl');
+      const select = document.getElementById('demoSelect');
+      const demoFile = select.value;
+      const url = `./samples/${demoFile}.txt`
+      fetch(url).then((response) => {
+        if (response.ok) {
+          response.text().then((txt) => {
+            console.log(txt);
+            importDSL(txt);
+            exportDSL();
+          });
+        } else {
+          console.log(response.status);
+        }
+      }).catch((err) => {
+        console.error(err);
+      });
+      /*
       ensureBasePatterns();
       project.patterns = [emptyPattern('A'), emptyPattern('B')];
       currentPatternIndex = 0;
@@ -607,6 +625,7 @@ const STEPS = 16;
       for (let i = 0; i < STEPS; i++) if (i !== 3 && i !== 11) state.pattern[2][i] = true;
       [7,15].forEach(s => state.pattern[3][s] = true);
       renderAll();
+      */
     }
 
     function writeVarLen(value) {
