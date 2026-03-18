@@ -796,7 +796,7 @@
       catch (e) { alert('JSON読み込み失敗: ' + e.message); }
     });
     */
-    document.getElementById('loadDemoDslBtn').addEventListener('click', loadDemoDsl);
+    // document.getElementById('loadDemoDslBtn').addEventListener('click', loadDemoDsl);
     ui.swing.addEventListener('input', () => { syncTopControls(); refreshSerializations(); });
     ui.master.addEventListener('input', () => { syncTopControls(); refreshSerializations(); });
     ui.tempo.addEventListener('input', refreshSerializations);
