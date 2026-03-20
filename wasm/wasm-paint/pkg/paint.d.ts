@@ -134,6 +134,7 @@ export interface InitOutput {
   readonly universe_imageEncoderSelectCanvas: (a: number, b: number, c: number) => [number, number];
   readonly universe_imageLoader: (a: number, b: number, c: number, d: number) => void;
   readonly universe_isAnimation: (a: number) => number;
+  readonly universe_jpegDecoder: (a: number, b: number, c: number, d: number) => void;
   readonly universe_jpegDecoderSelectCanvas: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly universe_layersLength: (a: number) => number;
   readonly universe_line: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
@@ -155,7 +156,6 @@ export interface InitOutput {
   readonly universe_setLayerAlpha: (a: number, b: number, c: number, d: number) => void;
   readonly universe_setPos: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly universe_sharpness: (a: number, b: number, c: number) => void;
-  readonly universe_jpegDecoder: (a: number, b: number, c: number, d: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_2: WebAssembly.Table;

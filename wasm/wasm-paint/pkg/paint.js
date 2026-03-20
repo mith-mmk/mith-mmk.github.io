@@ -417,7 +417,7 @@ export class Universe {
     jpegDecoder(buffer, verbose) {
         const ptr0 = passArray8ToWasm0(buffer, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.universe_imageDecoder(this.__wbg_ptr, ptr0, len0, verbose);
+        wasm.universe_jpegDecoder(this.__wbg_ptr, ptr0, len0, verbose);
     }
     /**
      * @param {number} width
@@ -879,7 +879,7 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbg_alert_fac757662099db4f = function(arg0, arg1) {
+    imports.wbg.__wbg_alert_f5165c58f679c784 = function(arg0, arg1) {
         alert(getStringFromWasm0(arg0, arg1));
     };
     imports.wbg.__wbg_call_7b07808271da073d = function() { return handleError(function (arg0, arg1) {
@@ -964,7 +964,7 @@ function __wbg_get_imports() {
         const ret = result;
         return ret;
     };
-    imports.wbg.__wbg_log_97701579f775e2c8 = function(arg0, arg1) {
+    imports.wbg.__wbg_log_62f93dca4aee6b65 = function(arg0, arg1) {
         console.log(getStringFromWasm0(arg0, arg1));
     };
     imports.wbg.__wbg_new_8a6f238a6ece86ea = function() {

@@ -4,7 +4,7 @@
   "collaborators": [
     "mith-mmk <47620686+mith-mmk@users.noreply.github.com>"
   ],
-  "version": "0.0.23",
+  "version": "0.0.24",
   "license": "MIT",
   "files": [
     "paint_bg.wasm",
