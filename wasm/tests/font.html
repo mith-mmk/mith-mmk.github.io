@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WASM Font Sample</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta viewport="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+  <link rel="stylesheet" href="./css/default.css">
+  <link rel="stylesheet" href="./css/fps.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 16px;
+    }
+
+    main {
+      display: grid;
+      gap: 12px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 8px;
+      max-width: 1280px;
+    }
+
+    .controls label {
+      display: grid;
+      gap: 4px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    textarea,
+    input,
+    button {
+      font: inherit;
+      padding: 8px;
+    }
+
+    #summary {
+      min-height: 1.5em;
+      white-space: pre-wrap;
+    }
+
+    canvas {
+      border: 1px solid #999;
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>フォントサンプル</h1>
+  <p>`wasm-pack build -t web --features font` 後に利用してください。</p>
+</header>
+<main>
+  <div class="controls">
+    <label>
+      Font URL
+      <input id="font-url" type="text" placeholder="./sample/your-font.ttf">
+    </label>
+    <label>
+      Font File
+      <input id="font-file" type="file" accept=".ttf,.otf,.ttc,.woff,.woff2">
+    </label>
+    <label>
+      Text
+      <textarea id="font-text" rows="5">FontReader feature test
+0123456789
+ABCDEFGHIJKLM
+NOPQRSTUVWXYZ
+ABCDEFGHIJKLM
+nopqrstuvwxzy
+
+Ligature: if ffi fi if i f f i
+
+CJK:
+「王様は、人を殺します。」
+「なぜ殺すのだ。」
+
+項籍者，下相人也，字羽。初起時，年二十四。
+
+高祖，沛丰邑中阳里人，姓刘氏，字季。
+
+태조실록1권, 태조 1년 7월 17일 병신 1/2 기사 / 1392년 명 홍무(洪武) 25년
+
+태조가 백관의 추대를 받아 수창궁에서 왕위에 오르다
+
+EMOJI:
+☹ 🥺 🤖 🐦 👮‍♀️👮‍♂️👮
+</textarea>
+    </label>
+    <label>
+      Font Size
+      <input id="font-size" type="number" min="8" max="256" step="1" value="32">
+    </label>
+    <div class="actions">
+      <button id="load-font" type="button">Load Font</button>
+      <button id="render-font" type="button">Render</button>
+    </div>
+  </div>
+  <div id="summary"></div>
+  <div id="fps"></div>
+  <canvas id="canvas" width="1280" height="960"></canvas>
+  <script type="module" src="./js/font.js"></script>
+</main>
+<footer>
+
+<div class="goback"><a href="../index.html" class="back">戻る</a></div>
+<div class="gotop"><a href="#header"></a></div>
+</footer>
+</body>
+</html>

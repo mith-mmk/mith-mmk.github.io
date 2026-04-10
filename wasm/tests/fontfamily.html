@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WASM Font Family Sample</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta viewport="width=device-width,initial-scale=1.0,minimum-scale=1.0">
+  <link rel="stylesheet" href="./css/default.css">
+  <link rel="stylesheet" href="./css/fps.css">
+  <style>
+
+
+    main {
+      display: grid;
+      gap: 12px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 8px;
+      max-width: 1280px;
+    }
+
+    .controls label {
+      display: grid;
+      gap: 4px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    textarea,
+    input,
+    select,
+    button {
+      font: inherit;
+      padding: 8px;
+    }
+
+    #summary {
+      min-height: 1.5em;
+      white-space: pre-wrap;
+    }
+
+    canvas {
+      border: 1px solid #999;
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>フォントファミリーサンプル</h1>
+</header>
+<main>
+  注意：フォントのサイズが大きいのでロードに時間がかかるかもしれません。
+  <div class="controls">
+    <label>
+      Family Name
+      <input id="family-name" type="text" value="Fira Sans" placeholder="Noto Sans">
+    </label>
+    <label>
+      Font URLs
+      <textarea id="font-urls" rows="3" placeholder="./sample/FiraSans-Regular.ttf&#10;./sample/FiraSans-Black.ttf">
+./sample/NotoSans-Regular.woff2
+./sample/NotoSans-Italic.woff2
+./sample/NotoSansJP-Regular.woff2
+./sample/NotoSansTC-Regular.woff2
+./sample/NotoSansSC-Regular.woff2
+./sample/NotoSansKR-Regular.woff2
+./sample/NotoColorEmoji-Regular.woff2
+      </textarea>
+    </label>
+    <label>
+      Font Files
+      <input id="font-files" type="file" accept=".ttf,.otf,.ttc,.woff,.woff2" multiple>
+    </label>
+    <label>
+      Text
+      <textarea id="font-text" rows="6">FontFamily feature test
+ABCDEFGHIJKLM
+NOPQRSTUVWXYZ
+abc def ghi jkl
+
+The quick brown fox jumps over the lazy dog.
+Ligature: fi ffi if
+
+CJK:
+メロスは激怒した。必ず、かの邪智暴虐の王を除かなければならぬと決意した。
+項籍者，下相人也，字羽。初起時，年二十四。
+高祖，沛丰邑中阳里人，姓刘氏，字季。
+
+EMOJI:
+☹ 🥺 🤖 🐦 👮‍♀️👮‍♂️👮
+</textarea>
+    </label>
+    <div class="grid">
+      <label>
+        Face Name
+        <input id="font-name" type="text" placeholder="face name" style="width: 10em;">
+      </label>
+      <label>
+        Font Size
+        <input id="font-size" type="number" min="8" max="256" step="1" value="36" style="width: 3em;">
+      </label>
+      <label>
+        Weight
+        <input id="font-weight" type="number" min="100" max="900" step="100" value="400">
+      </label>
+      <label>
+        Style
+        <select id="font-style">
+          <option value="normal" selected>normal</option>
+          <option value="italic">italic</option>
+          <option value="oblique">oblique</option>
+        </select>
+      </label>
+      <label>
+        Stretch
+        <input id="font-stretch" type="number" min="0.25" max="4" step="0.05" value="1">
+      </label>
+    </div>
+    <div class="actions">
+      <button id="load-family" type="button">Load Family</button>
+      <button id="render-family" type="button">Render</button>
+    </div>
+  </div>
+  <div id="summary"></div>
+  <div id="fps"></div>
+  <canvas id="canvas" width="1280" height="960"></canvas>
+  <script type="module" src="./js/fontfamily.js?v=fontfamily-20260329-3"></script>
+</main>
+<footer>
+
+<div class="goback"><a href="../index.html" class="back">戻る</a></div>
+<div class="gotop"><a href="#header"></a></div>
+</footer>
+</body>
+</html>

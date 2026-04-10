@@ -1,0 +1,31 @@
+{
+  "name": "paint",
+  "type": "module",
+  "collaborators": [
+    "mith-mmk <47620686+mith-mmk@users.noreply.github.com>"
+  ],
+  "description": "Web Browser for processing images and raster data",
+  "version": "0.0.26",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mith-mmk/wasm-paint"
+  },
+  "files": [
+    "paint_bg.wasm",
+    "paint.js",
+    "paint.d.ts",
+    "LICENSE_APACHE",
+    "LICENSE_MIT"
+  ],
+  "main": "paint.js",
+  "types": "paint.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ],
+  "keywords": [
+    "wasm",
+    "paint",
+    "graphics"
+  ]
+}
