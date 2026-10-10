@@ -4,8 +4,13 @@
   "collaborators": [
     "mith-mmk <47620686+mith-mmk@users.noreply.github.com>"
   ],
-  "version": "0.0.24",
+  "description": "Web Browser for processing images and raster data",
+  "version": "0.0.28",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mith-mmk/wasm-paint"
+  },
   "files": [
     "paint_bg.wasm",
     "paint.js",

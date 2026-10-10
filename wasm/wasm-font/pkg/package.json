@@ -5,7 +5,7 @@
     "mith-mmk <47620686+mith-mmk@users.noreply.github.com>"
   ],
   "description": "Web Browser for processing images and raster data",
-  "version": "0.0.26",
+  "version": "0.0.28",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -14,9 +14,7 @@
   "files": [
     "paint_bg.wasm",
     "paint.js",
-    "paint.d.ts",
-    "LICENSE_APACHE",
-    "LICENSE_MIT"
+    "paint.d.ts"
   ],
   "main": "paint.js",
   "types": "paint.d.ts",
