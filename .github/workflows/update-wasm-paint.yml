@@ -24,6 +24,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           path: homepage
+          persist-credentials: false
 
       - name: Resolve wasm-paint revision
         id: source
@@ -87,6 +88,7 @@ jobs:
         if: steps.source.outputs.changed == 'true'
         id: homepage
         env:
+          GH_TOKEN: ${{ github.token }}
           SOURCE_SHORT_SHA: ${{ steps.source.outputs.short_sha }}
         run: |
           set -eu
@@ -110,6 +112,7 @@ jobs:
             git -C homepage config user.name "github-actions[bot]"
             git -C homepage config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git -C homepage commit -m "Deploy wasm-paint $SOURCE_SHORT_SHA"
+            gh auth setup-git --hostname github.com
             git -C homepage push origin HEAD:master
           else
             echo "Generated packages are already committed; retrying Pages publication."
@@ -132,6 +135,7 @@ jobs:
       - name: Record published revision
         if: success() && steps.source.outputs.changed == 'true'
         env:
+          GH_TOKEN: ${{ github.token }}
           SOURCE_SHA: ${{ steps.source.outputs.sha }}
           SOURCE_SHORT_SHA: ${{ steps.source.outputs.short_sha }}
         run: |
@@ -154,4 +158,5 @@ jobs:
           git -C homepage config user.name "github-actions[bot]"
           git -C homepage config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git -C homepage commit -m "Record published wasm-paint $SOURCE_SHORT_SHA"
+          gh auth setup-git --hostname github.com
           git -C homepage push origin HEAD:master

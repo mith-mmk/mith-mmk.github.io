@@ -10,9 +10,11 @@ When the revision changes, the workflow builds and updates only:
 - wasm/wasm-paint/pkg: default features
 - wasm/wasm-font/pkg: font and svg-font features
 
-The source checkout is read-only. The workflow uses the homepage repository's
-short-lived GITHUB_TOKEN; no personal access token or persistent secret is
-required. Its permissions are limited to contents: write and pages: write.
+Both checkouts omit persisted credentials, so source builds cannot read the
+homepage repository's write token from Git configuration. The workflow exposes
+the short-lived GITHUB_TOKEN only to the publication steps; no personal access
+token or persistent secret is required. Its permissions are limited to
+contents: write and pages: write.
 
 ## Pages publication and retries
 
