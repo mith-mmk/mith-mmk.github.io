@@ -1,0 +1,170 @@
+name: Update wasm-paint packages
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: update-wasm-paint-packages
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.repository == 'mith-mmk/mith-mmk.github.io' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out homepage
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: homepage
+          persist-credentials: false
+
+      - name: Resolve wasm-paint revision
+        id: source
+        run: |
+          set -eu
+          source_sha="$(git ls-remote https://github.com/mith-mmk/wasm-paint.git refs/heads/main | awk '{print $1}')"
+          if ! printf '%s' "$source_sha" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "Could not resolve wasm-paint/main." >&2
+            exit 1
+          fi
+
+          published_sha=""
+          if [ -f homepage/.github/wasm-paint-published-sha ]; then
+            published_sha="$(tr -d '[:space:]' < homepage/.github/wasm-paint-published-sha)"
+          fi
+
+          echo "sha=$source_sha" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$(printf '%.7s' "$source_sha")" >> "$GITHUB_OUTPUT"
+          if [ "$source_sha" = "$published_sha" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "wasm-paint $source_sha is already published."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "wasm-paint changed: ${published_sha:-not-yet-published} -> $source_sha"
+          fi
+
+      - name: Check out wasm-paint
+        if: steps.source.outputs.changed == 'true'
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: mith-mmk/wasm-paint
+          ref: ${{ steps.source.outputs.sha }}
+          path: source
+          persist-credentials: false
+
+      - name: Install Rust
+        if: steps.source.outputs.changed == 'true'
+        run: |
+          rustup toolchain install 1.91.0 --profile minimal --target wasm32-unknown-unknown
+          rustup default 1.91.0
+          rustc --version
+
+      - name: Install wasm-pack
+        if: steps.source.outputs.changed == 'true'
+        uses: taiki-e/install-action@ab6895351a88b908e96a4697860d4ffea5e57dbe # v2.87.27
+        with:
+          tool: wasm-pack@0.15.0
+          fallback: none
+
+      - name: Build WebAssembly packages and stage UI
+        if: steps.source.outputs.changed == 'true'
+        run: |
+          staging_directory="$(mktemp -d)"
+          echo "STAGING_DIRECTORY=$staging_directory" >> "$GITHUB_ENV"
+          sh homepage/.github/scripts/build-wasm-paint-packages.sh \
+            source \
+            "$staging_directory" \
+            homepage/.github/wasm-paint.Cargo.lock
+
+      - name: Commit generated packages
+        if: steps.source.outputs.changed == 'true'
+        id: homepage
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHORT_SHA: ${{ steps.source.outputs.short_sha }}
+        run: |
+          set -eu
+          rsync --archive --delete "$STAGING_DIRECTORY/wasm-paint/" homepage/wasm/wasm-paint/pkg/
+          rsync --archive --delete "$STAGING_DIRECTORY/wasm-font/" homepage/wasm/wasm-font/pkg/
+          rsync --archive "$STAGING_DIRECTORY/web-paint-ui.html" homepage/wasm/tests/web-paint-ui.html
+          rsync --archive "$STAGING_DIRECTORY/web-paint.html" homepage/wasm/tests/web-paint.html
+          rsync --archive --delete "$STAGING_DIRECTORY/web-paint/" homepage/wasm/tests/web-paint/
+
+          unexpected="$({
+            git -C homepage status --porcelain=v1 --untracked-files=all |
+              sed -E 's/^...//' |
+              grep -Ev '^wasm/((wasm-paint|wasm-font)/pkg/|tests/(web-paint(-ui)?\.html|web-paint/))'
+          } || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Refusing to commit unexpected paths:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
+
+          git -C homepage diff --check
+          git -C homepage add -- \
+            wasm/wasm-paint/pkg \
+            wasm/wasm-font/pkg \
+            wasm/tests/web-paint-ui.html \
+            wasm/tests/web-paint.html \
+            wasm/tests/web-paint
+          if ! git -C homepage diff --cached --quiet; then
+            git -C homepage config user.name "github-actions[bot]"
+            git -C homepage config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git -C homepage commit -m "Deploy wasm-paint $SOURCE_SHORT_SHA"
+            gh auth setup-git --hostname github.com
+            git -C homepage push origin HEAD:master
+          else
+            echo "Generated packages are already committed; retrying Pages publication."
+          fi
+
+          echo "sha=$(git -C homepage rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Request and verify Pages build
+        if: steps.source.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HOMEPAGE_SHA: ${{ steps.homepage.outputs.sha }}
+        run: |
+          sh homepage/.github/scripts/request-pages-build.sh \
+            "$GITHUB_REPOSITORY" \
+            "$HOMEPAGE_SHA" \
+            30 \
+            10
+
+      - name: Record published revision
+        if: success() && steps.source.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ steps.source.outputs.sha }}
+          SOURCE_SHORT_SHA: ${{ steps.source.outputs.short_sha }}
+        run: |
+          set -eu
+          printf '%s\n' "$SOURCE_SHA" > homepage/.github/wasm-paint-published-sha
+
+          unexpected="$({
+            git -C homepage status --porcelain=v1 --untracked-files=all |
+              sed -E 's/^...//' |
+              grep -Ev '^\.github/wasm-paint-published-sha$'
+          } || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Refusing to record publication with unexpected changes:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
+
+          git -C homepage add -- .github/wasm-paint-published-sha
+          git -C homepage diff --cached --check
+          git -C homepage config user.name "github-actions[bot]"
+          git -C homepage config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C homepage commit -m "Record published wasm-paint $SOURCE_SHORT_SHA"
+          gh auth setup-git --hostname github.com
+          git -C homepage push origin HEAD:master
