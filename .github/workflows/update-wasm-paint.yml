@@ -74,7 +74,7 @@ jobs:
           tool: wasm-pack@0.15.0
           fallback: none
 
-      - name: Build WebAssembly packages
+      - name: Build WebAssembly packages and stage UI
         if: steps.source.outputs.changed == 'true'
         run: |
           staging_directory="$(mktemp -d)"
@@ -94,11 +94,14 @@ jobs:
           set -eu
           rsync --archive --delete "$STAGING_DIRECTORY/wasm-paint/" homepage/wasm/wasm-paint/pkg/
           rsync --archive --delete "$STAGING_DIRECTORY/wasm-font/" homepage/wasm/wasm-font/pkg/
+          rsync --archive "$STAGING_DIRECTORY/web-paint-ui.html" homepage/wasm/tests/web-paint-ui.html
+          rsync --archive "$STAGING_DIRECTORY/web-paint.html" homepage/wasm/tests/web-paint.html
+          rsync --archive --delete "$STAGING_DIRECTORY/web-paint/" homepage/wasm/tests/web-paint/
 
           unexpected="$({
             git -C homepage status --porcelain=v1 --untracked-files=all |
               sed -E 's/^...//' |
-              grep -Ev '^wasm/(wasm-paint|wasm-font)/pkg/'
+              grep -Ev '^wasm/((wasm-paint|wasm-font)/pkg/|tests/(web-paint(-ui)?\.html|web-paint/))'
           } || true)"
           if [ -n "$unexpected" ]; then
             echo "Refusing to commit unexpected paths:" >&2
@@ -107,7 +110,12 @@ jobs:
           fi
 
           git -C homepage diff --check
-          git -C homepage add -- wasm/wasm-paint/pkg wasm/wasm-font/pkg
+          git -C homepage add -- \
+            wasm/wasm-paint/pkg \
+            wasm/wasm-font/pkg \
+            wasm/tests/web-paint-ui.html \
+            wasm/tests/web-paint.html \
+            wasm/tests/web-paint
           if ! git -C homepage diff --cached --quiet; then
             git -C homepage config user.name "github-actions[bot]"
             git -C homepage config user.email "41898282+github-actions[bot]@users.noreply.github.com"

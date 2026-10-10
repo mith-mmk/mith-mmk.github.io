@@ -9,6 +9,9 @@ When the revision changes, the workflow builds and updates only:
 
 - wasm/wasm-paint/pkg: default features
 - wasm/wasm-font/pkg: font and svg-font features
+- wasm/tests/web-paint-ui.html: standalone paint UI
+- wasm/tests/web-paint.html and wasm/tests/web-paint: embedded demo, scripts,
+  styles, local sample image, icons, provenance, and third-party licenses
 
 Both checkouts omit persisted credentials, so source builds cannot read the
 homepage repository's write token from Git configuration. The workflow exposes
@@ -37,7 +40,7 @@ the source checkout. Until wasm-paint tracks that file, the workflow uses
 git dependencies. Update the fallback lockfile deliberately when source
 dependency changes require it.
 
-The build refuses an existing output directory, verifies the expected generated
+The build refuses existing output paths, verifies the expected generated and UI
 files, and removes wasm-pack's generated .gitignore. Before committing, the
-workflow rejects changes outside the two package directories and runs
-git diff --check.
+workflow rejects changes outside the two package directories and the web paint
+UI paths, then runs git diff --check.
