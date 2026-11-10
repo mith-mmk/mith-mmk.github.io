@@ -67,6 +67,10 @@ export class Universe {
     drawSelectCanvas(width: number, height: number, no: number): void;
     drawTexLike(text: string, x: number, y: number, font_size: number, color: number): void;
     drawTextFamily(text: string, x: number, y: number, font_size: number, color: number, font_name: string | null | undefined, font_weight: number, font_style: string | null | undefined, font_stretch: number): void;
+    /**
+     * Additive single-face flow API. Coordinates use the shaped run origin.
+     */
+    drawTextFlow(text: string, x: number, y: number, font_size: number, color: number, flow: string): void;
     drawText(text: string, x: number, y: number, font_size: number, color: number): void;
     ellipseAntialias(ox: number, oy: number, rx: number, ry: number, tilde: number, color: number, alpha: number, size: number): void;
     ellipse(ox: number, oy: number, rx: number, ry: number, tilde: number, color: number): void;
@@ -123,6 +127,10 @@ export class Universe {
     maskInvert(mask_id: number): void;
     maskShrink(mask_id: number, radius: number): number;
     maskUnion(left: number, right: number): number;
+    /**
+     * Conservative ink bounds [min_x, min_y, max_x, max_y], or empty for no ink.
+     */
+    measureTextFlow(text: string, font_size: number, flow: string): Float32Array;
     moveLayer(label: string, direction: string): boolean;
     static newOnWorker(width: number, height: number): Universe;
     constructor(width: number, height: number);
@@ -199,6 +207,7 @@ export interface InitOutput {
     readonly universe_drawTexLike: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
     readonly universe_drawText: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
     readonly universe_drawTextFamily: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number) => [number, number];
+    readonly universe_drawTextFlow: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => [number, number];
     readonly universe_ellipse: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
     readonly universe_ellipseAntialias: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
     readonly universe_fill: (a: number, b: number, c: number, d: number) => void;
@@ -251,6 +260,7 @@ export interface InitOutput {
     readonly universe_maskInvert: (a: number, b: number) => [number, number];
     readonly universe_maskShrink: (a: number, b: number, c: number) => [number, number, number];
     readonly universe_maskUnion: (a: number, b: number, c: number) => [number, number, number];
+    readonly universe_measureTextFlow: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number, number, number];
     readonly universe_moveLayer: (a: number, b: number, c: number, d: number, e: number) => [number, number, number];
     readonly universe_new: (a: number, b: number) => number;
     readonly universe_newOnWorker: (a: number, b: number) => number;

@@ -48,6 +48,7 @@ export const universe_drawSelectCanvas2: (a: number, b: number, c: number, d: nu
 export const universe_drawTexLike: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
 export const universe_drawText: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
 export const universe_drawTextFamily: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number) => [number, number];
+export const universe_drawTextFlow: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => [number, number];
 export const universe_ellipse: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
 export const universe_ellipseAntialias: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
 export const universe_fill: (a: number, b: number, c: number, d: number) => void;
@@ -100,6 +101,7 @@ export const universe_maskIntersect: (a: number, b: number, c: number) => [numbe
 export const universe_maskInvert: (a: number, b: number) => [number, number];
 export const universe_maskShrink: (a: number, b: number, c: number) => [number, number, number];
 export const universe_maskUnion: (a: number, b: number, c: number) => [number, number, number];
+export const universe_measureTextFlow: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number, number, number];
 export const universe_moveLayer: (a: number, b: number, c: number, d: number, e: number) => [number, number, number];
 export const universe_new: (a: number, b: number) => number;
 export const universe_newOnWorker: (a: number, b: number) => number;

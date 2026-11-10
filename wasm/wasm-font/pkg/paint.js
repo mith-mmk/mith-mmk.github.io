@@ -557,6 +557,25 @@ export class Universe {
         }
     }
     /**
+     * Additive single-face flow API. Coordinates use the shaped run origin.
+     * @param {string} text
+     * @param {number} x
+     * @param {number} y
+     * @param {number} font_size
+     * @param {number} color
+     * @param {string} flow
+     */
+    drawTextFlow(text, x, y, font_size, color, flow) {
+        const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(flow, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_drawTextFlow(this.__wbg_ptr, ptr0, len0, x, y, font_size, color, ptr1, len1);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
      * @param {string} text
      * @param {number} x
      * @param {number} y
@@ -1204,6 +1223,26 @@ export class Universe {
         return ret[0] >>> 0;
     }
     /**
+     * Conservative ink bounds [min_x, min_y, max_x, max_y], or empty for no ink.
+     * @param {string} text
+     * @param {number} font_size
+     * @param {string} flow
+     * @returns {Float32Array}
+     */
+    measureTextFlow(text, font_size, flow) {
+        const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(flow, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_measureTextFlow(this.__wbg_ptr, ptr0, len0, font_size, ptr1, len1);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v3 = getArrayF32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v3;
+    }
+    /**
      * @param {string} label
      * @param {string} direction
      * @returns {boolean}
@@ -1702,6 +1741,11 @@ function debugString(val) {
     }
     // TODO we could test for more things here, like `Set`s and `Map`s.
     return className;
+}
+
+function getArrayF32FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getFloat32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
 }
 
 function getArrayU8FromWasm0(ptr, len) {
