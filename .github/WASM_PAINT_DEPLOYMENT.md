@@ -2,12 +2,15 @@
 
 The "Update wasm-paint packages" workflow checks the public
 mith-mmk/wasm-paint main branch once per day at 03:17 UTC and can also be run
-manually. It exits before installing the build tools when the source revision
-recorded in .github/wasm-paint-published-sha is already published.
+manually (with an optional `force` input to rebuild and redeploy the current
+revision even when its SHA is already recorded). It exits before installing the
+build tools when the source revision recorded in .github/wasm-paint-published-sha
+is already published and `force` is not enabled.
 
 When the revision changes, the workflow builds and updates only:
 
-- wasm/wasm-paint/pkg: default features
+- wasm/wasm-paint/pkg: font and svg-font features (matching wasm/wasm-font/pkg,
+  required by web-paint-ui.html vertical text)
 - wasm/wasm-font/pkg: font and svg-font features
 - wasm/tests/web-paint-ui.html: standalone paint UI
 - wasm/tests/web-paint.html and wasm/tests/web-paint: embedded demo, scripts,

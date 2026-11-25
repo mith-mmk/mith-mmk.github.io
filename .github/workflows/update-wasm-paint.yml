@@ -2,6 +2,11 @@ name: Update wasm-paint packages
 
 on:
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Rebuild and redeploy even if wasm-paint/main SHA is already published"
+        type: boolean
+        default: false
   schedule:
     - cron: "17 3 * * *"
 
@@ -28,6 +33,8 @@ jobs:
 
       - name: Resolve wasm-paint revision
         id: source
+        env:
+          FORCE_REBUILD: ${{ github.event_name == 'workflow_dispatch' && inputs.force }}
         run: |
           set -eu
           source_sha="$(git ls-remote https://github.com/mith-mmk/wasm-paint.git refs/heads/main | awk '{print $1}')"
@@ -43,7 +50,10 @@ jobs:
 
           echo "sha=$source_sha" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(printf '%.7s' "$source_sha")" >> "$GITHUB_OUTPUT"
-          if [ "$source_sha" = "$published_sha" ]; then
+          if [ "${FORCE_REBUILD:-false}" = "true" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Force rebuild requested for wasm-paint $source_sha."
+          elif [ "$source_sha" = "$published_sha" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "wasm-paint $source_sha is already published."
           else
@@ -163,8 +173,12 @@ jobs:
 
           git -C homepage add -- .github/wasm-paint-published-sha
           git -C homepage diff --cached --check
-          git -C homepage config user.name "github-actions[bot]"
-          git -C homepage config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git -C homepage commit -m "Record published wasm-paint $SOURCE_SHORT_SHA"
-          gh auth setup-git --hostname github.com
-          git -C homepage push origin HEAD:master
+          if ! git -C homepage diff --cached --quiet; then
+            git -C homepage config user.name "github-actions[bot]"
+            git -C homepage config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git -C homepage commit -m "Record published wasm-paint $SOURCE_SHORT_SHA"
+            gh auth setup-git --hostname github.com
+            git -C homepage push origin HEAD:master
+          else
+            echo "Published revision $SOURCE_SHA is already recorded."
+          fi

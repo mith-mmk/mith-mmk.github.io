@@ -23,6 +23,7 @@ for ui_file in \
     tests/web-paint.html \
     tests/web-paint/external-ui.css \
     tests/web-paint/external-ui.js \
+    tests/web-paint/font-text.js \
     tests/web-paint/paint-tool.js \
     tests/web-paint/assets/README.md \
     tests/web-paint/assets/meadow.png \
@@ -77,15 +78,15 @@ cp "$source_directory/tests/web-paint.html" "$output_directory/web-paint.html"
 mkdir -p "$output_directory/web-paint"
 cp "$source_directory/tests/web-paint/external-ui.css" "$output_directory/web-paint/"
 cp "$source_directory/tests/web-paint/external-ui.js" "$output_directory/web-paint/"
+cp "$source_directory/tests/web-paint/font-text.js" "$output_directory/web-paint/"
 cp "$source_directory/tests/web-paint/paint-tool.js" "$output_directory/web-paint/"
 cp -R "$source_directory/tests/web-paint/assets" "$output_directory/web-paint/assets"
 
 cd "$source_directory/wasm-paint"
 
 wasm-pack build --target web --release --out-dir "$output_directory/wasm-paint" -- \
-    --locked
-wasm-pack build --target web --release --out-dir "$output_directory/wasm-font" -- \
     --locked --features font,svg-font
+cp -R "$output_directory/wasm-paint" "$output_directory/wasm-font"
 
 for package_directory in wasm-paint wasm-font; do
     # wasm-pack creates this for source checkouts. It must not hide generated
@@ -106,6 +107,13 @@ for package_directory in wasm-paint wasm-font; do
             exit 1
         fi
     done
+
+    for method in loadFont drawTextFlow measureTextFlow; do
+        if ! grep -Eq "(^|[^A-Za-z0-9_])${method}[[:space:]]*\\(" "$output_directory/$package_directory/paint.d.ts"; then
+            echo "missing expected font binding in $package_directory/paint.d.ts: $method" >&2
+            exit 1
+        fi
+    done
 done
 
 for ui_file in \
@@ -113,6 +121,7 @@ for ui_file in \
     web-paint.html \
     web-paint/external-ui.css \
     web-paint/external-ui.js \
+    web-paint/font-text.js \
     web-paint/paint-tool.js \
     web-paint/assets/README.md \
     web-paint/assets/meadow.png \
