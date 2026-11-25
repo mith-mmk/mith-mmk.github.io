@@ -4,6 +4,8 @@
 export class Universe {
     free(): void;
     [Symbol.dispose](): void;
+    addFontToFamilyWithDescriptor(buffer: Uint8Array, font_name: string | null | undefined, font_weight: number, font_style: string | null | undefined, font_stretch: number): void;
+    addFontToFamily(buffer: Uint8Array): void;
     addLayer(label: string, width: number, height: number): void;
     affineAdd(no: number, value1: number, value2: number): void;
     affineNew(): void;
@@ -11,7 +13,9 @@ export class Universe {
     affineTest2(canvas_in: number, canvas_out: number, no: number, interpolation: number): void;
     affineTest(canvas_in: number, canvas_out: number): void;
     appendCanvas(width: number, height: number): number;
+    appendFontFamilyChunk(face_id: string, offset: number, chunk: Uint8Array): boolean;
     autoBrightness(canvas_in: number, canvas_out: number): void;
+    beginFontFamilyFace(face_id: string, total_size: number, font_name: string | null | undefined, font_weight: number, font_style: string | null | undefined, font_stretch: number): void;
     bezierCurve3Antialias(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x4: number, y4: number, color: number, size: number): void;
     bezierCurve3(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, x4: number, y4: number, color: number): void;
     bezierCurveAntialias(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: number, size: number): void;
@@ -61,6 +65,13 @@ export class Universe {
      * This function cannnot run on web worker.
      */
     drawSelectCanvas(width: number, height: number, no: number): void;
+    drawTexLike(text: string, x: number, y: number, font_size: number, color: number): void;
+    drawTextFamily(text: string, x: number, y: number, font_size: number, color: number, font_name: string | null | undefined, font_weight: number, font_style: string | null | undefined, font_stretch: number): void;
+    /**
+     * Additive single-face flow API. Coordinates use the shaped run origin.
+     */
+    drawTextFlow(text: string, x: number, y: number, font_size: number, color: number, flow: string): void;
+    drawText(text: string, x: number, y: number, font_size: number, color: number): void;
     ellipseAntialias(ox: number, oy: number, rx: number, ry: number, tilde: number, color: number, alpha: number, size: number): void;
     ellipse(ox: number, oy: number, rx: number, ry: number, tilde: number, color: number): void;
     fillLinearGradientRect(x: number, y: number, width: number, height: number, start_x: number, start_y: number, end_x: number, end_y: number, start_argb: number, end_argb: number, spread: string, linear_rgb: boolean): void;
@@ -76,10 +87,12 @@ export class Universe {
     filterEx(canvas_in: number, canvas_out: number, filter_name: string, _options: Float32Array): void;
     filter(canvas_in: number, canvas_out: number, filter_name: string): void;
     filters(canvas_in: number, canvas_out: number, filter_names: string[]): void;
+    finalizeFontFamilyFace(face_id: string): void;
     /**
      * Fills the connected region on the selected layer. Returns whether any pixels changed.
      */
     floodFill(x: number, y: number, tolerance: number, compare_alpha: boolean, eight_connected: boolean, argb: number): boolean;
+    fontFamilyFaceCount(): number;
     gammaControl(canvas_in: number, canvas_out: number, gamma: number): void;
     getBufferSelectCanvas(number: number): number;
     getBuffer(): number;
@@ -96,6 +109,7 @@ export class Universe {
     imageEncoderSelectCanvas(number: number, verbose: number): Uint8Array;
     imageEncoder(verbose: number): Uint8Array;
     imageLoader(buffer: Uint8Array, interpolation: number): void;
+    inspectTextFamily(text: string, font_size: number, font_name: string | null | undefined, font_weight: number, font_style: string | null | undefined, font_stretch: number): string;
     invertCrCb(canvas_in: number, canvas_out: number): void;
     isAnimation(): boolean;
     jpegDecoderSelectCanvas(buffer: Uint8Array, verbose: number, number: number): void;
@@ -104,6 +118,7 @@ export class Universe {
     lineAntialias(sx: number, sy: number, ex: number, ey: number, color: number): void;
     lineWithPen(sx: number, sy: number, ey: number, ex: number, color: number): void;
     line(sx: number, sy: number, ex: number, ey: number, color: number): void;
+    loadFont(buffer: Uint8Array): void;
     maskCoverage(mask_id: number, x: number, y: number): number;
     maskDifference(left: number, right: number): number;
     maskFeather(mask_id: number, radius: number): number;
@@ -112,6 +127,10 @@ export class Universe {
     maskInvert(mask_id: number): void;
     maskShrink(mask_id: number, radius: number): number;
     maskUnion(left: number, right: number): number;
+    /**
+     * Conservative ink bounds [min_x, min_y, max_x, max_y], or empty for no ink.
+     */
+    measureTextFlow(text: string, font_size: number, flow: string): Float32Array;
     moveLayer(label: string, direction: string): boolean;
     static newOnWorker(width: number, height: number): Universe;
     constructor(width: number, height: number);
@@ -123,6 +142,7 @@ export class Universe {
     quadraticCurveAntialias(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, a: number, color: number, size: number): void;
     quadraticCurve(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, a: number, color: number): void;
     rect(sx: number, sy: number, ey: number, ex: number, color: number): void;
+    resetFontFamily(family_name: string): void;
     saturationControl(canvas_in: number, canvas_out: number, saturation: number): void;
     setCurrentLayer(label: string): string;
     setDisable(label: string): void;
@@ -142,6 +162,8 @@ export interface InitOutput {
     readonly memory: WebAssembly.Memory;
     readonly __wbg_universe_free: (a: number, b: number) => void;
     readonly initialization: () => void;
+    readonly universe_addFontToFamily: (a: number, b: number, c: number) => [number, number];
+    readonly universe_addFontToFamilyWithDescriptor: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => [number, number];
     readonly universe_addLayer: (a: number, b: number, c: number, d: number, e: number) => void;
     readonly universe_affineAdd: (a: number, b: number, c: number, d: number) => void;
     readonly universe_affineNew: (a: number) => void;
@@ -149,7 +171,9 @@ export interface InitOutput {
     readonly universe_affineTest: (a: number, b: number, c: number) => void;
     readonly universe_affineTest2: (a: number, b: number, c: number, d: number, e: number) => void;
     readonly universe_appendCanvas: (a: number, b: number, c: number) => number;
+    readonly universe_appendFontFamilyChunk: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number, number];
     readonly universe_autoBrightness: (a: number, b: number, c: number) => void;
+    readonly universe_beginFontFamilyFace: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number) => [number, number];
     readonly universe_bezierCurve: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => void;
     readonly universe_bezierCurve3: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number) => void;
     readonly universe_bezierCurve3Antialias: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number) => void;
@@ -180,6 +204,10 @@ export interface InitOutput {
     readonly universe_drawPath: (a: number, b: number, c: number, d: number) => void;
     readonly universe_drawSelectCanvas: (a: number, b: number, c: number, d: number) => [number, number];
     readonly universe_drawSelectCanvas2: (a: number, b: number, c: number, d: number) => [number, number];
+    readonly universe_drawTexLike: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
+    readonly universe_drawText: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => [number, number];
+    readonly universe_drawTextFamily: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number) => [number, number];
+    readonly universe_drawTextFlow: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => [number, number];
     readonly universe_ellipse: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
     readonly universe_ellipseAntialias: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
     readonly universe_fill: (a: number, b: number, c: number, d: number) => void;
@@ -195,7 +223,9 @@ export interface InitOutput {
     readonly universe_filter: (a: number, b: number, c: number, d: number, e: number) => void;
     readonly universe_filterEx: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
     readonly universe_filters: (a: number, b: number, c: number, d: number, e: number) => void;
+    readonly universe_finalizeFontFamilyFace: (a: number, b: number, c: number) => [number, number];
     readonly universe_floodFill: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => number;
+    readonly universe_fontFamilyFaceCount: (a: number) => number;
     readonly universe_gammaControl: (a: number, b: number, c: number, d: number) => void;
     readonly universe_getBuffer: (a: number) => number;
     readonly universe_getBufferSelectCanvas: (a: number, b: number) => number;
@@ -212,6 +242,7 @@ export interface InitOutput {
     readonly universe_imageEncoder: (a: number, b: number) => [number, number];
     readonly universe_imageEncoderSelectCanvas: (a: number, b: number, c: number) => [number, number];
     readonly universe_imageLoader: (a: number, b: number, c: number, d: number) => void;
+    readonly universe_inspectTextFamily: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number) => [number, number, number, number];
     readonly universe_invertCrCb: (a: number, b: number, c: number) => void;
     readonly universe_isAnimation: (a: number) => number;
     readonly universe_jpegDecoder: (a: number, b: number, c: number, d: number) => void;
@@ -220,6 +251,7 @@ export interface InitOutput {
     readonly universe_line: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
     readonly universe_lineAntialias: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
     readonly universe_lineWithPen: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+    readonly universe_loadFont: (a: number, b: number, c: number) => [number, number];
     readonly universe_maskCoverage: (a: number, b: number, c: number, d: number) => [number, number, number];
     readonly universe_maskDifference: (a: number, b: number, c: number) => [number, number, number];
     readonly universe_maskFeather: (a: number, b: number, c: number) => [number, number, number];
@@ -228,6 +260,7 @@ export interface InitOutput {
     readonly universe_maskInvert: (a: number, b: number) => [number, number];
     readonly universe_maskShrink: (a: number, b: number, c: number) => [number, number, number];
     readonly universe_maskUnion: (a: number, b: number, c: number) => [number, number, number];
+    readonly universe_measureTextFlow: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number, number, number];
     readonly universe_moveLayer: (a: number, b: number, c: number, d: number, e: number) => [number, number, number];
     readonly universe_new: (a: number, b: number) => number;
     readonly universe_newOnWorker: (a: number, b: number) => number;
@@ -239,6 +272,7 @@ export interface InitOutput {
     readonly universe_quadraticCurve: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => void;
     readonly universe_quadraticCurveAntialias: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number) => void;
     readonly universe_rect: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+    readonly universe_resetFontFamily: (a: number, b: number, c: number) => [number, number];
     readonly universe_saturationControl: (a: number, b: number, c: number, d: number) => void;
     readonly universe_setCurrentLayer: (a: number, b: number, c: number) => [number, number];
     readonly universe_setDisable: (a: number, b: number, c: number) => void;

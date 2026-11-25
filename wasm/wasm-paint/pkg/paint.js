@@ -18,6 +18,36 @@ export class Universe {
         wasm.__wbg_universe_free(ptr, 0);
     }
     /**
+     * @param {Uint8Array} buffer
+     * @param {string | null | undefined} font_name
+     * @param {number} font_weight
+     * @param {string | null | undefined} font_style
+     * @param {number} font_stretch
+     */
+    addFontToFamilyWithDescriptor(buffer, font_name, font_weight, font_style, font_stretch) {
+        const ptr0 = passArray8ToWasm0(buffer, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        var ptr1 = isLikeNone(font_name) ? 0 : passStringToWasm0(font_name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len1 = WASM_VECTOR_LEN;
+        var ptr2 = isLikeNone(font_style) ? 0 : passStringToWasm0(font_style, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len2 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_addFontToFamilyWithDescriptor(this.__wbg_ptr, ptr0, len0, ptr1, len1, font_weight, ptr2, len2, font_stretch);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * @param {Uint8Array} buffer
+     */
+    addFontToFamily(buffer) {
+        const ptr0 = passArray8ToWasm0(buffer, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_addFontToFamily(this.__wbg_ptr, ptr0, len0);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
      * @param {string} label
      * @param {number} width
      * @param {number} height
@@ -72,11 +102,48 @@ export class Universe {
         return ret >>> 0;
     }
     /**
+     * @param {string} face_id
+     * @param {number} offset
+     * @param {Uint8Array} chunk
+     * @returns {boolean}
+     */
+    appendFontFamilyChunk(face_id, offset, chunk) {
+        const ptr0 = passStringToWasm0(face_id, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passArray8ToWasm0(chunk, wasm.__wbindgen_malloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_appendFontFamilyChunk(this.__wbg_ptr, ptr0, len0, offset, ptr1, len1);
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        return ret[0] !== 0;
+    }
+    /**
      * @param {number} canvas_in
      * @param {number} canvas_out
      */
     autoBrightness(canvas_in, canvas_out) {
         wasm.universe_autoBrightness(this.__wbg_ptr, canvas_in, canvas_out);
+    }
+    /**
+     * @param {string} face_id
+     * @param {number} total_size
+     * @param {string | null | undefined} font_name
+     * @param {number} font_weight
+     * @param {string | null | undefined} font_style
+     * @param {number} font_stretch
+     */
+    beginFontFamilyFace(face_id, total_size, font_name, font_weight, font_style, font_stretch) {
+        const ptr0 = passStringToWasm0(face_id, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        var ptr1 = isLikeNone(font_name) ? 0 : passStringToWasm0(font_name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len1 = WASM_VECTOR_LEN;
+        var ptr2 = isLikeNone(font_style) ? 0 : passStringToWasm0(font_style, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len2 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_beginFontFamilyFace(this.__wbg_ptr, ptr0, len0, total_size, ptr1, len1, font_weight, ptr2, len2, font_stretch);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * @param {number} x1
@@ -452,6 +519,78 @@ export class Universe {
         }
     }
     /**
+     * @param {string} text
+     * @param {number} x
+     * @param {number} y
+     * @param {number} font_size
+     * @param {number} color
+     */
+    drawTexLike(text, x, y, font_size, color) {
+        const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_drawTexLike(this.__wbg_ptr, ptr0, len0, x, y, font_size, color);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * @param {string} text
+     * @param {number} x
+     * @param {number} y
+     * @param {number} font_size
+     * @param {number} color
+     * @param {string | null | undefined} font_name
+     * @param {number} font_weight
+     * @param {string | null | undefined} font_style
+     * @param {number} font_stretch
+     */
+    drawTextFamily(text, x, y, font_size, color, font_name, font_weight, font_style, font_stretch) {
+        const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        var ptr1 = isLikeNone(font_name) ? 0 : passStringToWasm0(font_name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len1 = WASM_VECTOR_LEN;
+        var ptr2 = isLikeNone(font_style) ? 0 : passStringToWasm0(font_style, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len2 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_drawTextFamily(this.__wbg_ptr, ptr0, len0, x, y, font_size, color, ptr1, len1, font_weight, ptr2, len2, font_stretch);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * Additive single-face flow API. Coordinates use the shaped run origin.
+     * @param {string} text
+     * @param {number} x
+     * @param {number} y
+     * @param {number} font_size
+     * @param {number} color
+     * @param {string} flow
+     */
+    drawTextFlow(text, x, y, font_size, color, flow) {
+        const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(flow, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_drawTextFlow(this.__wbg_ptr, ptr0, len0, x, y, font_size, color, ptr1, len1);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
+     * @param {string} text
+     * @param {number} x
+     * @param {number} y
+     * @param {number} font_size
+     * @param {number} color
+     */
+    drawText(text, x, y, font_size, color) {
+        const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_drawText(this.__wbg_ptr, ptr0, len0, x, y, font_size, color);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
      * @param {number} ox
      * @param {number} oy
      * @param {number} rx
@@ -691,6 +830,17 @@ export class Universe {
         wasm.universe_filters(this.__wbg_ptr, canvas_in, canvas_out, ptr0, len0);
     }
     /**
+     * @param {string} face_id
+     */
+    finalizeFontFamilyFace(face_id) {
+        const ptr0 = passStringToWasm0(face_id, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_finalizeFontFamilyFace(this.__wbg_ptr, ptr0, len0);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
+    }
+    /**
      * Fills the connected region on the selected layer. Returns whether any pixels changed.
      * @param {number} x
      * @param {number} y
@@ -703,6 +853,13 @@ export class Universe {
     floodFill(x, y, tolerance, compare_alpha, eight_connected, argb) {
         const ret = wasm.universe_floodFill(this.__wbg_ptr, x, y, tolerance, compare_alpha, eight_connected, argb);
         return ret !== 0;
+    }
+    /**
+     * @returns {number}
+     */
+    fontFamilyFaceCount() {
+        const ret = wasm.universe_fontFamilyFaceCount(this.__wbg_ptr);
+        return ret >>> 0;
     }
     /**
      * @param {number} canvas_in
@@ -858,6 +1015,39 @@ export class Universe {
         wasm.universe_imageLoader(this.__wbg_ptr, ptr0, len0, interpolation);
     }
     /**
+     * @param {string} text
+     * @param {number} font_size
+     * @param {string | null | undefined} font_name
+     * @param {number} font_weight
+     * @param {string | null | undefined} font_style
+     * @param {number} font_stretch
+     * @returns {string}
+     */
+    inspectTextFamily(text, font_size, font_name, font_weight, font_style, font_stretch) {
+        let deferred5_0;
+        let deferred5_1;
+        try {
+            const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+            const len0 = WASM_VECTOR_LEN;
+            var ptr1 = isLikeNone(font_name) ? 0 : passStringToWasm0(font_name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+            var len1 = WASM_VECTOR_LEN;
+            var ptr2 = isLikeNone(font_style) ? 0 : passStringToWasm0(font_style, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+            var len2 = WASM_VECTOR_LEN;
+            const ret = wasm.universe_inspectTextFamily(this.__wbg_ptr, ptr0, len0, font_size, ptr1, len1, font_weight, ptr2, len2, font_stretch);
+            var ptr4 = ret[0];
+            var len4 = ret[1];
+            if (ret[3]) {
+                ptr4 = 0; len4 = 0;
+                throw takeFromExternrefTable0(ret[2]);
+            }
+            deferred5_0 = ptr4;
+            deferred5_1 = len4;
+            return getStringFromWasm0(ptr4, len4);
+        } finally {
+            wasm.__wbindgen_free(deferred5_0, deferred5_1, 1);
+        }
+    }
+    /**
      * @param {number} canvas_in
      * @param {number} canvas_out
      */
@@ -926,6 +1116,17 @@ export class Universe {
      */
     line(sx, sy, ex, ey, color) {
         wasm.universe_line(this.__wbg_ptr, sx, sy, ex, ey, color);
+    }
+    /**
+     * @param {Uint8Array} buffer
+     */
+    loadFont(buffer) {
+        const ptr0 = passArray8ToWasm0(buffer, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_loadFont(this.__wbg_ptr, ptr0, len0);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * @param {number} mask_id
@@ -1020,6 +1221,26 @@ export class Universe {
             throw takeFromExternrefTable0(ret[1]);
         }
         return ret[0] >>> 0;
+    }
+    /**
+     * Conservative ink bounds [min_x, min_y, max_x, max_y], or empty for no ink.
+     * @param {string} text
+     * @param {number} font_size
+     * @param {string} flow
+     * @returns {Float32Array}
+     */
+    measureTextFlow(text, font_size, flow) {
+        const ptr0 = passStringToWasm0(text, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(flow, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_measureTextFlow(this.__wbg_ptr, ptr0, len0, font_size, ptr1, len1);
+        if (ret[3]) {
+            throw takeFromExternrefTable0(ret[2]);
+        }
+        var v3 = getArrayF32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v3;
     }
     /**
      * @param {string} label
@@ -1138,6 +1359,17 @@ export class Universe {
      */
     rect(sx, sy, ey, ex, color) {
         wasm.universe_rect(this.__wbg_ptr, sx, sy, ey, ex, color);
+    }
+    /**
+     * @param {string} family_name
+     */
+    resetFontFamily(family_name) {
+        const ptr0 = passStringToWasm0(family_name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.universe_resetFontFamily(this.__wbg_ptr, ptr0, len0);
+        if (ret[1]) {
+            throw takeFromExternrefTable0(ret[0]);
+        }
     }
     /**
      * @param {number} canvas_in
@@ -1509,6 +1741,11 @@ function debugString(val) {
     }
     // TODO we could test for more things here, like `Set`s and `Map`s.
     return className;
+}
+
+function getArrayF32FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getFloat32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
 }
 
 function getArrayU8FromWasm0(ptr, len) {
